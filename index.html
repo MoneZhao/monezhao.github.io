@@ -355,6 +355,714 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://monezhao.github.io/2019/07/02/JDK8-new-things/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mone Zhao">
+      <meta itemprop="description" content="世界既不黑也不白，而是一道精致的灰。">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mone Zhao 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/02/JDK8-new-things/" class="post-title-link" itemprop="url">JDK8 新特性</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-02 15:09:37 / 修改时间：15:16:37" itemprop="dateCreated datePublished" datetime="2019-07-02T15:09:37+08:00">2019-07-02</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">10k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">17 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>JDK 8 是自JDK 5以来，Oracle对JDK做出的最重大的更新，这个版本中包含了语言、编译器、库、工具、JVM等多种新特性。针对我们平时常用的一些场景，接下来将介绍JDK 8中的新特性。</p>
+<h2 id="JAVA-语言的新特性"><a href="#JAVA-语言的新特性" class="headerlink" title="JAVA 语言的新特性"></a>JAVA 语言的新特性</h2><h3 id="Lambda表达式和函数式接口"><a href="#Lambda表达式和函数式接口" class="headerlink" title="Lambda表达式和函数式接口"></a>Lambda表达式和函数式接口</h3><p>Lambda的设计者们为了让现有的功能与Lambda表达式良好兼容，考虑了很多方法，于是产生了函数接口这个概念，所以我们先讲函数式接口。</p>
+<h4 id="函数式接口"><a href="#函数式接口" class="headerlink" title="函数式接口"></a>函数式接口</h4><p>函数式接口(Functional Interface)就是一个有且仅有一个抽象方法，但是可以有多个非抽象方法的接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">GreetingService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sayMessage</span><span class="params">(String message)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Java 8为函数式接口引入了一个新注解@FunctionalInterface，主要用于编译级错误检查，加上该注解，当你写的接口不符合函数式接口定义的时候，编译器会报错。</p>
+<blockquote>
+<p>加不加 <strong>@FunctionalInterface</strong> 对于接口是不是函数式接口没有影响，该注解只是提醒编译器去检查该接口是否仅包含一个抽象方法。</p>
+</blockquote>
+<p><strong>函数式接口里允许定义默认方法</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">GreetingService</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sayMessage</span><span class="params">(String message)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">doSomeMoreWork1</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">// Method body</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">doSomeMoreWork2</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">// Method body</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>函数式接口里允许定义静态方法</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">GreetingService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sayMessage</span><span class="params">(String message)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printHello</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Hello"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>函数式接口里允许定义 java.lang.Object 里的 public 方法</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">GreetingService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sayMessage</span><span class="params">(String message)</span></span>;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>默认方法和静态方法也是JDK 8的新特性，之后会详细的介绍。</p>
+</blockquote>
+<p>JDK 1.8 之前已有的函数式接口:</p>
+<ul>
+<li>java.lang.Runnable</li>
+<li>java.util.concurrent.Callable</li>
+<li>java.security.PrivilegedAction</li>
+<li>java.util.Comparator</li>
+<li>java.io.FileFilter</li>
+<li>java.nio.file.PathMatcher</li>
+<li>java.lang.reflect.InvocationHandler</li>
+<li>java.beans.PropertyChangeListener</li>
+<li>java.awt.event.ActionListener</li>
+<li>javax.swing.event.ChangeListener</li>
+</ul>
+<p>JDK 1.8 新增加的函数接口：</p>
+<ul>
+<li>java.util.function</li>
+</ul>
+<h4 id="Lambda表达式"><a href="#Lambda表达式" class="headerlink" title="Lambda表达式"></a>Lambda表达式</h4><p>Lambda表达式（也称为闭包）允许我们将函数当成参数传递给某个方法，或者把代码本身当作数据处理。之前的JDK中只能使用匿名内部类代替Lambda表达式。</p>
+<p>之前的写法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Person p = <span class="keyword">new</span> Person() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">                System.out.println(<span class="string">"eat something"</span> + s);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        p.eat();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>JDK 8的写法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Person p = (s) -&gt; System.out.println(<span class="string">"eat something"</span> + s);</span><br><span class="line">        p.eat();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个操作就像是将<code>(s) -&gt; System.out.println(&quot;eat something&quot; + s)</code>这段代码赋值给了p这个实例。</p>
+<p>我们对比一下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">  System.out.println(<span class="string">"eat something"</span> + s);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">p = (s) -&gt; System.out.println(<span class="string">"eat something"</span> + s);</span><br></pre></td></tr></table></figure>
+<p>Lambda表达式移除了多余的 <code>public void eat</code> , 移除了传入参数的类型 String，一行代码所以可以移除大括号，在参数和函数之间加入了 <code>-&gt;</code>符号。传统的Java 7必须要求你定义一个“污染环境”的接口实现InterfaceImpl或者使用匿名内部类，而相较之下Java 8的Lambda, 就显得干净很多。</p>
+<p><strong>Lambda表达式并非匿名内部类的语法糖</strong></p>
+<p>实际上，匿名内部类存在着影响应用性能的问题。</p>
+<p>首先，编译器会为每一个匿名内部类创建一个类文件。创建出来的类文件的名称通常按照这样的规则 ClassName 符合和数字。生成如此多的文件就会带来问题，因为类在使用之前需要加载类文件并进行验证，这个过程则会影响应用的启动性能。类文件的加载很有可能是一个耗时的操作，这其中包含了磁盘 IO 和解压 JAR 文件。</p>
+<p>假设 Lambda 表达式翻译成匿名内部类，那么每一个 Lambda 表达式都会有一个对应的类文件。随着匿名内部类进行加载，其必然要占用 JVM 中的元空间（从 Java 8 开始永久代的一种替代实现）。如果匿名内部类的方法被 JIT 编译成机器代码，则会存储到代码缓存中。同时，匿名内部类都需要实例化成独立的对象。以上关于匿名内部类的种种会使得应用的内存占用增加。因此我们有必要引入新的缓存机制减少过多的内存占用，这也就意味着我们需要引入某种抽象层。</p>
+<p>总的来说，lambda的大致思路如下：</p>
+<ol>
+<li>lamdba表达式被编译生成当前类的一个私有静态方法</li>
+<li>在原调用Lamdba方法的地方编译成了一个invokedynamic指令（java7 JVM中增加了一个新的指令）调用，同时呢也生成了一个对应的BootstrapMethod</li>
+<li>当lamdba表达式被JVM执行，也就是碰到2中说到的invokedynamic指令，该指令引导调用LambdaMetafactory.metafactory方法，该方法返回一个CallSite实例</li>
+<li>这个CallSite实例中的target对象，也就是直接引用到一个MethodHandle实例，而这个MethodHandle实例会调用到1中生成的静态方法，在上面的例子就是lambda$main$0这个方法，完成整个lamdba表达式的使用</li>
+</ol>
+<p><strong>查看原文：</strong><a href="http://www.infoq.com/articles/Java-8-Lambdas-A-Peek-Under-the-Hood" target="_blank" rel="noopener">Java 8 Lambdas - A Peek Under the Hood</a></p>
+<h3 id="接口的默认方法和静态方法"><a href="#接口的默认方法和静态方法" class="headerlink" title="接口的默认方法和静态方法"></a>接口的默认方法和静态方法</h3><p>默认方法和抽象方法之间的区别在于抽象方法需要实现，而默认方法不需要。接口提供的默认方法会被接口的实现类继承或者覆写，例子代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">interface</span> <span class="title">Defaulable</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">default</span> String <span class="title">notRequired</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Default implementation"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> Defaulable <span class="title">create</span><span class="params">( Supplier&lt; Defaulable &gt; supplier )</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> supplier.get();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultableImpl</span> <span class="keyword">implements</span> <span class="title">Defaulable</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OverridableImpl</span> <span class="keyword">implements</span> <span class="title">Defaulable</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">notRequired</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Overridden implementation"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="方法引用"><a href="#方法引用" class="headerlink" title="方法引用"></a>方法引用</h3><p>方法引用使得开发者可以直接引用现存的方法、Java类的构造方法或者实例对象，总的来说，一共有以下几种形式：</p>
+<ul>
+<li>静态方法引用：ClassName::methodName;</li>
+<li>实例上的实例方法引用：instanceName::methodName;</li>
+<li>超类上的实例方法引用：supper::methodName;</li>
+<li>类的实例方法引用：ClassName:methodName;</li>
+<li>构造方法引用Class:new;</li>
+<li>数组构造方法引用::TypeName[]::new</li>
+</ul>
+<p>构造器引用，语法是<strong>Class::new</strong>，或者更一般的形式：<strong>Class<t>::new</t></strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> Test test = Test::<span class="keyword">new</span>;</span><br></pre></td></tr></table></figure>
+<p>静态方法引用，语法是<strong>Class::static_method</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">list.forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+<h3 id="重复注解"><a href="#重复注解" class="headerlink" title="重复注解"></a>重复注解</h3><p>在Java 8中使用<strong>@Repeatable</strong>注解定义重复注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>( ElementType.TYPE )</span><br><span class="line"><span class="meta">@Retention</span>( RetentionPolicy.RUNTIME )</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Filters &#123;</span><br><span class="line">    Filter[] value();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Target</span>( ElementType.TYPE )</span><br><span class="line"><span class="meta">@Retention</span>( RetentionPolicy.RUNTIME )</span><br><span class="line"><span class="meta">@Repeatable</span>( Filters.class )</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Filter &#123;</span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Filter</span>( <span class="string">"filter1"</span> )</span><br><span class="line"><span class="meta">@Filter</span>( <span class="string">"filter2"</span> )</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Filterable</span> </span>&#123;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Java官方库的新特性"><a href="#Java官方库的新特性" class="headerlink" title="Java官方库的新特性"></a>Java官方库的新特性</h2><h3 id="Optional"><a href="#Optional" class="headerlink" title="Optional"></a>Optional</h3><p>Java应用中最常见的bug就是<strong>NullPointerException</strong>，JDK参考了Guava的<strong>Optionals</strong>类来解决<strong>NullPointerException</strong>，从而避免源码被各种<strong>null</strong>检查污染。</p>
+<p>看一个简单样例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Optional&lt; String &gt; firstName = Optional.of( <span class="string">"Tom"</span> );</span><br><span class="line">System.out.println( <span class="string">"First Name is set? "</span> + firstName.isPresent() );</span><br><span class="line">System.out.println( <span class="string">"First Name: "</span> + firstName.orElseGet( () -&gt; <span class="string">"[none]"</span> ) );</span><br><span class="line">System.out.println( firstName.map( s -&gt; <span class="string">"Hey "</span> + s + <span class="string">"!"</span> ).orElse( <span class="string">"Hey Stranger!"</span> ) );</span><br><span class="line">System.out.println();</span><br></pre></td></tr></table></figure>
+<p>更直接的例子，使用JPA访问数据库（最新的Mybatis已经支持，但是代码生成工具还没有支持）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserInfoRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">UserInfo</span>, <span class="title">String</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">UserInfo <span class="title">findByName</span><span class="params">(String name)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">business</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    UserInfo user = userInfoRepository.findByName(<span class="string">"dumdum"</span>);</span><br><span class="line">    <span class="keyword">if</span> (Objects.isNull(user)) &#123;</span><br><span class="line">        <span class="comment">// throw exception</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//----------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">//使用Optional</span></span><br><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserInfoRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">UserInfo</span>, <span class="title">String</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">Optional&lt;Userinfo&gt; <span class="title">findByName</span><span class="params">(String name)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">business</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Optional&lt;Userinfo&gt; userOpt = userInfoRepository.findByName(<span class="string">"dumdum"</span>);</span><br><span class="line">    UserInfo user = userOpt.orElseThrow(() -&gt;</span><br><span class="line">            <span class="keyword">new</span> Exception(<span class="string">"查無 userInfo(dumdum) 資訊."</span>));</span><br><span class="line">    <span class="comment">// UserInfo user = userOpt.orElse(new UserInfo("Rocko")));</span></span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Streams"><a href="#Streams" class="headerlink" title="Streams"></a>Streams</h3><p>有了函数式编程之后，配合StreamAPI，极大得简化了集合操作（后面我们会看到不止是集合）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">enum</span> Status &#123;</span><br><span class="line">  OPEN, CLOSED</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Collection&lt; Task &gt; tasks = Arrays.asList(</span><br><span class="line">    <span class="keyword">new</span> Task( Status.OPEN, <span class="number">5</span> ),</span><br><span class="line">    <span class="keyword">new</span> Task( Status.OPEN, <span class="number">13</span> ),</span><br><span class="line">    <span class="keyword">new</span> Task( Status.CLOSED, <span class="number">8</span> )</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">//如何计算集合中每个任务的点数在集合中所占的比重</span></span><br><span class="line"> Collection&lt; String &gt; result = tasks</span><br><span class="line">    .stream()                                        <span class="comment">// Stream&lt; String &gt;</span></span><br><span class="line">    .mapToInt( Task::getPoints )                     <span class="comment">// IntStream</span></span><br><span class="line">    .asLongStream()                                  <span class="comment">// LongStream</span></span><br><span class="line">    .mapToDouble( points -&gt; points / totalPoints )   <span class="comment">// DoubleStream</span></span><br><span class="line">    .boxed()                                         <span class="comment">// Stream&lt; Double &gt;</span></span><br><span class="line">    .mapToLong( weigth -&gt; ( <span class="keyword">long</span> )( weigth * <span class="number">100</span> ) ) <span class="comment">// LongStream</span></span><br><span class="line">    .mapToObj( percentage -&gt; percentage + <span class="string">"%"</span> )      <span class="comment">// Stream&lt; String&gt;</span></span><br><span class="line">    .collect( Collectors.toList() );                 <span class="comment">// List&lt; String &gt;</span></span><br><span class="line"></span><br><span class="line">System.out.println( result );</span><br></pre></td></tr></table></figure>
+<p>传统的IO操作（从文件或者网络一行一行得读取数据）可以受益于steam处理, 配合try-with-resource写法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Path path = <span class="keyword">new</span> File( filename ).toPath();</span><br><span class="line"><span class="keyword">try</span>( Stream&lt; String &gt; lines = Files.lines( path, StandardCharsets.UTF_8 ) ) &#123;</span><br><span class="line">    lines.onClose( () -&gt; System.out.println(<span class="string">"Done!"</span>) ).forEach( System.out::println );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Date-Time-API-JSR-310"><a href="#Date-Time-API-JSR-310" class="headerlink" title="Date/Time API(JSR 310)"></a>Date/Time API(JSR 310)</h3><p><strong>java.util.Date</strong>和后来的<strong>java.util.Calendar</strong>一直存在着诸多的问题，比如：</p>
+<ol>
+<li><p>线程安全问题：java.util.Date是非线程安全的，所有的日期类都是可变的；</p>
+</li>
+<li><p>设计很差：在java.util和java.sql的包中都有日期类，此外，用于格式化和解析的类在java.text包中也有定义。而每个包将其合并在一起，也是不合理的；</p>
+</li>
+<li><p>时区处理麻烦：日期类不提供国际化，没有时区支持，因此Java中引入了java.util.Calendar和Java.util.TimeZone类；</p>
+</li>
+</ol>
+<p>从而催生了第三方库Joda-Time，Java 8中新的时间和日期管理API深受Joda-Time影响，并吸收了很多Joda-Time的精华。</p>
+<p>在java.util.time包中常用的几个类有：</p>
+<ul>
+<li>它通过指定一个时区，然后就可以获取到当前的时刻，日期与时间。Clock可以替换System.currentTimeMillis()与TimeZone.getDefault()</li>
+<li>Instant:一个instant对象表示时间轴上的一个时间点，Instant.now()方法会返回当前的瞬时点（格林威治时间）；</li>
+<li>Duration:用于表示两个瞬时点相差的时间量；</li>
+<li>LocalDate:一个带有年份，月份和天数的日期，可以使用静态方法now或者of方法进行创建；</li>
+<li>LocalTime:表示一天中的某个时间，同样可以使用now和of进行创建；</li>
+<li>LocalDateTime：兼有日期和时间；</li>
+<li>ZonedDateTime：通过设置时间的id来创建一个带时区的时间；</li>
+<li>DateTimeFormatter：日期格式化类，提供了多种预定义的标准格式；</li>
+</ul>
+<h4 id="Spring-中-LocalDateTime格式处理"><a href="#Spring-中-LocalDateTime格式处理" class="headerlink" title="Spring 中 LocalDateTime格式处理"></a>Spring 中 LocalDateTime格式处理</h4><h5 id="Controller接收LocalDateTime参数"><a href="#Controller接收LocalDateTime参数" class="headerlink" title="Controller接收LocalDateTime参数"></a>Controller接收LocalDateTime参数</h5><p>@RequestParam @DateTimeFormat(pattern = “yyyy-MM-dd HH:mm:ss”) LocalDateTime date</p>
+<h5 id="ResponseBody格式化LocalDateTime"><a href="#ResponseBody格式化LocalDateTime" class="headerlink" title="ResponseBody格式化LocalDateTime"></a>ResponseBody格式化LocalDateTime</h5><p>Spring默认使用jackson来进行json格式转换，我们只需要使用@Bean注解创建一个ObjectMapperbean，并将JavaTimeModule注册到ObjectMapper中即可，spring会使用该bean创建MappingJackson2HttpMessageConverter进行json格式转换。这里需要加入<code>jackson</code>的<code>jsr310</code>扩展包。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.fasterxml.jackson.datatype&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;jackson-datatype-jsr310&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.8.9&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span>(name = <span class="string">"mapperObject"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> ObjectMapper <span class="title">getObjectMapper</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ObjectMapper om = <span class="keyword">new</span> ObjectMapper();</span><br><span class="line">    JavaTimeModule javaTimeModule = <span class="keyword">new</span> JavaTimeModule();</span><br><span class="line">    javaTimeModule.addSerializer(LocalDateTime.class, <span class="keyword">new</span> LocalDateTimeSerializer(DateTimeFormatter.ofPattern(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>)));</span><br><span class="line">    javaTimeModule.addSerializer(LocalDate.class, <span class="keyword">new</span> LocalDateSerializer(DateTimeFormatter.ofPattern(<span class="string">"yyyy-MM-dd"</span>)));</span><br><span class="line">    javaTimeModule.addSerializer(LocalTime.class, <span class="keyword">new</span> LocalTimeSerializer(DateTimeFormatter.ofPattern(<span class="string">"HH:mm:ss"</span>)));</span><br><span class="line">    om.registerModule(javaTimeModule);</span><br><span class="line">    <span class="keyword">return</span> om;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>或者使用（缺点是每一个变量都需要加这个注解）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@JsonSerialize</span>(using = LocalDateTimeSerializer.class)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>另外，如果持久层框架使用mybatis，同样需要加入<code>mybatis</code>的<code>jsr310</code> 扩展包。</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.mybatis&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;mybatis-typehandlers-jsr310&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.0.2&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="Base64"><a href="#Base64" class="headerlink" title="Base64"></a>Base64</h3><p>对Base64编码的支持已经被加入到Java 8官方库中，这样不需要使用第三方库就可以进行Base64编码，例子代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">String text = <span class="string">"Base64 finally in Java 8!"</span>;</span><br><span class="line">String encoded = Base64.getEncoder()</span><br><span class="line">  .encodeToString( text.getBytes( StandardCharsets.UTF_8 ) );</span><br><span class="line">System.out.println( encoded );</span><br><span class="line">String decoded = <span class="keyword">new</span> String(</span><br><span class="line">  Base64.getDecoder()</span><br><span class="line">  .decode( encoded ),StandardCharsets.UTF_8</span><br><span class="line">);</span><br><span class="line">System.out.println( decoded );</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://monezhao.github.io/2019/06/06/maven-knowledge/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mone Zhao">
+      <meta itemprop="description" content="世界既不黑也不白，而是一道精致的灰。">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mone Zhao 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/06/06/maven-knowledge/" class="post-title-link" itemprop="url">Maven入门知识</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-06 20:37:53 / 修改时间：23:30:24" itemprop="dateCreated datePublished" datetime="2019-06-06T20:37:53+08:00">2019-06-06</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">11k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">18 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Maven 是 Apache 下的一个纯 Java 开发的项目管理工具，可以对 Java 项目进行构建、依赖管理。</p>
+<h2 id="约定配置"><a href="#约定配置" class="headerlink" title="约定配置"></a>约定配置</h2><p>Maven 提倡使用一个共同的标准目录结构，Maven 使用约定优于配置的原则，大家尽可能的遵守这样的目录结构。如下所示：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">目录</th>
+<th style="text-align:center">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">${basedir}</td>
+<td style="text-align:center">存放pom.xml和所有的子目录</td>
+</tr>
+<tr>
+<td style="text-align:center">${basedir}/src/main/java</td>
+<td style="text-align:center">项目的java源代码</td>
+</tr>
+<tr>
+<td style="text-align:center">${basedir}/src/main/resources</td>
+<td style="text-align:center">项目的资源，比如说property文件，springmvc.xml</td>
+</tr>
+<tr>
+<td style="text-align:center">${basedir}/src/test/java</td>
+<td style="text-align:center">项目的测试类，比如说Junit代码</td>
+</tr>
+<tr>
+<td style="text-align:center">${basedir}/src/test/resources</td>
+<td style="text-align:center">测试用的资源</td>
+</tr>
+<tr>
+<td style="text-align:center">${basedir}/src/main/webapp/WEB-INF</td>
+<td style="text-align:center">web应用文件目录，web项目的信息，比如存放web.xml、本地图片、jsp视图页面</td>
+</tr>
+<tr>
+<td style="text-align:center">${basedir}/target</td>
+<td style="text-align:center">打包输出目录</td>
+</tr>
+<tr>
+<td style="text-align:center">${basedir}/target/classes</td>
+<td style="text-align:center">编译输出目录</td>
+</tr>
+<tr>
+<td style="text-align:center">${basedir}/target/test-classes</td>
+<td style="text-align:center">测试编译输出目录</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Maven-POM"><a href="#Maven-POM" class="headerlink" title="Maven POM"></a>Maven POM</h2><p>POM( Project Object Model，项目对象模型 ) 是 Maven 工程的基本工作单元，是一个XML文件，包含了项目的基本信息，用于描述项目如何构建，声明项目依赖，等等。</p>
+<p>执行任务或目标时，Maven 会在当前目录中查找 POM。它读取 POM，获取所需的配置信息，然后执行目标。</p>
+<p>所有 POM 文件都需要 project 元素和三个必需字段：groupId，artifactId，version。</p>
+<p>样例</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span> = <span class="string">"http://maven.apache.org/POM/4.0.0"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:xsi</span> = <span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xsi:schemaLocation</span> = <span class="string">"http://maven.apache.org/POM/4.0.0</span></span></span><br><span class="line"><span class="tag"><span class="string">    http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">    <span class="comment">&lt;!-- 模型版本 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 公司或者组织的唯一标志，并且配置时生成的路径也是由此生成 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.58suo.mes<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">    <span class="comment">&lt;!-- 项目的唯一ID，一个groupId下面可能多个项目，就是靠artifactId来区分的 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>718mes<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"> </span><br><span class="line">    <span class="comment">&lt;!-- 版本号 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">节点</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">project</td>
+<td style="text-align:center">工程的根标签</td>
+</tr>
+<tr>
+<td style="text-align:center">modelVersion</td>
+<td style="text-align:center">模型版本需要设置为 4.0</td>
+</tr>
+<tr>
+<td style="text-align:center">groupId</td>
+<td style="text-align:center">这是工程组的标识。它在一个组织或者项目中通常是唯一的<br>一般是网站域名的反写</td>
+</tr>
+<tr>
+<td style="text-align:center">artifactId</td>
+<td style="text-align:center">这是工程的标识</td>
+</tr>
+<tr>
+<td style="text-align:center">version</td>
+<td style="text-align:center">工程的版本号</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Maven-构建生命周期"><a href="#Maven-构建生命周期" class="headerlink" title="Maven 构建生命周期"></a>Maven 构建生命周期</h2><p>不同的生命周期一般还有不同的阶段，当我们执行 mvn post-clean 命令时，Maven 调用 clean 生命周期，它包含以下阶段：</p>
+<ul>
+<li>pre-clean：执行一些需要在clean之前完成的工作</li>
+<li>clean：移除所有上一次构建生成的文件</li>
+<li>post-clean：执行一些需要在clean之后立刻完成的工作</li>
+</ul>
+<p>mvn clean 中的 clean 就是上面的 clean，在一个生命周期中，运行某个阶段的时候，它之前的所有阶段都会被运行，但不包含之后的周期。</p>
+<p>重要的周期如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">生命周期</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">validate</td>
+<td style="text-align:center">检查工程配置是否正确，完成构建过程的所有必要信息是否能够获取到。</td>
+</tr>
+<tr>
+<td style="text-align:center">initialize</td>
+<td style="text-align:center">初始化构建状态，例如设置属性。</td>
+</tr>
+<tr>
+<td style="text-align:center">generate-sources</td>
+<td style="text-align:center">生成编译阶段需要包含的任何源码文件。</td>
+</tr>
+<tr>
+<td style="text-align:center">process-sources</td>
+<td style="text-align:center">处理源代码，例如，过滤任何值（filter any value）。</td>
+</tr>
+<tr>
+<td style="text-align:center">generate-resources</td>
+<td style="text-align:center">生成工程包中需要包含的资源文件。</td>
+</tr>
+<tr>
+<td style="text-align:center">process-resources</td>
+<td style="text-align:center">拷贝和处理资源文件到目的目录中，为打包阶段做准备。</td>
+</tr>
+<tr>
+<td style="text-align:center">compile</td>
+<td style="text-align:center">编译工程源码。</td>
+</tr>
+<tr>
+<td style="text-align:center">process-classes</td>
+<td style="text-align:center">处理编译生成的文件，例如 Java Class 字节码的加强和优化。</td>
+</tr>
+<tr>
+<td style="text-align:center">generate-test-sources</td>
+<td style="text-align:center">生成编译阶段需要包含的任何测试源代码。</td>
+</tr>
+<tr>
+<td style="text-align:center">process-test-sources</td>
+<td style="text-align:center">处理测试源代码，例如，过滤任何值（filter any values)。</td>
+</tr>
+<tr>
+<td style="text-align:center">test-compile</td>
+<td style="text-align:center">编译测试源代码到测试目的目录。</td>
+</tr>
+<tr>
+<td style="text-align:center">process-test-classes</td>
+<td style="text-align:center">处理测试代码文件编译后生成的文件。</td>
+</tr>
+<tr>
+<td style="text-align:center">test</td>
+<td style="text-align:center">使用适当的单元测试框架（例如JUnit）运行测试。</td>
+</tr>
+<tr>
+<td style="text-align:center">prepare-package</td>
+<td style="text-align:center">在真正打包之前，为准备打包执行任何必要的操作。</td>
+</tr>
+<tr>
+<td style="text-align:center">package</td>
+<td style="text-align:center">获取编译后的代码，并按照可发布的格式进行打包，例如 JAR、WAR 或者 EAR 文件。</td>
+</tr>
+<tr>
+<td style="text-align:center">pre-integration-test</td>
+<td style="text-align:center">在集成测试执行之前，执行所需的操作。例如，设置所需的环境变量。</td>
+</tr>
+<tr>
+<td style="text-align:center">integration-test</td>
+<td style="text-align:center">处理和部署必须的工程包到集成测试能够运行的环境中。</td>
+</tr>
+<tr>
+<td style="text-align:center">post-integration-test</td>
+<td style="text-align:center">在集成测试被执行后执行必要的操作。例如，清理环境。</td>
+</tr>
+<tr>
+<td style="text-align:center">verify</td>
+<td style="text-align:center">运行检查操作来验证工程包是有效的，并满足质量要求。</td>
+</tr>
+<tr>
+<td style="text-align:center">install</td>
+<td style="text-align:center">安装工程包到本地仓库中，该仓库可以作为本地其他工程的依赖。</td>
+</tr>
+<tr>
+<td style="text-align:center">deploy</td>
+<td style="text-align:center">拷贝最终的工程包到远程仓库中，以共享给其他开发人员和工程。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Maven-不同环境配置"><a href="#Maven-不同环境配置" class="headerlink" title="Maven 不同环境配置"></a>Maven 不同环境配置</h2><p>maven pom文件中包含了<code>&lt;profiles&gt;</code>节点，以此来为不同的环境设置不同的配置文件，构建过程等，例如开发环境，测试环境，生产环境等。</p>
+<p>profiles 节点样例：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">profiles</span>&gt;</span></span><br><span class="line">       <span class="comment">&lt;!--根据环境参数或命令行参数激活某个构建处理 --&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">profile</span>&gt;</span></span><br><span class="line">           <span class="comment">&lt;!--构建配置的唯一标识符。即用于命令行激活，也用于在继承时合并具有相同标识符的profile。 --&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">id</span> /&gt;</span></span><br><span class="line">           <span class="comment">&lt;!--自动触发profile的条件逻辑。Activation是profile的开启钥匙。profile的力量来自于它 能够在某些特定的环境中自动使用某些特定的值；这些环境通过activation元素指定。activation元素并不是激活profile的唯一方式。 --&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">activation</span>&gt;</span></span><br><span class="line">               <span class="comment">&lt;!--profile默认是否激活的标志 --&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">activeByDefault</span> /&gt;</span></span><br><span class="line">               <span class="comment">&lt;!--当匹配的jdk被检测到，profile被激活。例如，1.4激活JDK1.4，1.4.0_2，而!1.4激活所有版本不是以1.4开头的JDK。 --&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">jdk</span> /&gt;</span></span><br><span class="line">               <span class="comment">&lt;!--当匹配的操作系统属性被检测到，profile被激活。os元素可以定义一些操作系统相关的属性。 --&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">os</span>&gt;</span></span><br><span class="line">                   <span class="comment">&lt;!--激活profile的操作系统的名字 --&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">name</span>&gt;</span>Windows XP<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">                   <span class="comment">&lt;!--激活profile的操作系统所属家族(如 'windows') --&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">family</span>&gt;</span>Windows<span class="tag">&lt;/<span class="name">family</span>&gt;</span></span><br><span class="line">                   <span class="comment">&lt;!--激活profile的操作系统体系结构 --&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">arch</span>&gt;</span>x86<span class="tag">&lt;/<span class="name">arch</span>&gt;</span></span><br><span class="line">                   <span class="comment">&lt;!--激活profile的操作系统版本 --&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.1.2600<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;/<span class="name">os</span>&gt;</span></span><br><span class="line">               <span class="comment">&lt;!--如果Maven检测到某一个属性（其值可以在POM中通过$&#123;名称&#125;引用），其拥有对应的名称和值，Profile就会被激活。如果值 字段是空的，那么存在属性名称字段就会激活profile，否则按区分大小写方式匹配属性值字段 --&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">                   <span class="comment">&lt;!--激活profile的属性的名称 --&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">name</span>&gt;</span>mavenVersion<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">                   <span class="comment">&lt;!--激活profile的属性的值 --&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">value</span>&gt;</span>2.0.3<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">               <span class="comment">&lt;!--提供一个文件名，通过检测该文件的存在或不存在来激活profile。missing检查文件是否存在，如果不存在则激活 profile。另一方面，exists则会检查文件是否存在，如果存在则激活profile。 --&gt;</span></span><br><span class="line">               <span class="tag">&lt;<span class="name">file</span>&gt;</span></span><br><span class="line">                   <span class="comment">&lt;!--如果指定的文件存在，则激活profile。 --&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">exists</span>&gt;</span>/usr/local/hudson/hudson-home/jobs/maven-guide-zh-to-production/workspace/</span><br><span class="line">                   <span class="tag">&lt;/<span class="name">exists</span>&gt;</span></span><br><span class="line">                   <span class="comment">&lt;!--如果指定的文件不存在，则激活profile。 --&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">missing</span>&gt;</span>/usr/local/hudson/hudson-home/jobs/maven-guide-zh-to-production/workspace/</span><br><span class="line">                   <span class="tag">&lt;/<span class="name">missing</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;/<span class="name">file</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;/<span class="name">activation</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">build</span>/&gt;</span><span class="comment">&lt;!--构建项目所需要的信息。参见Maven构建一节。--&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Maven-构建"><a href="#Maven-构建" class="headerlink" title="Maven 构建"></a>Maven 构建</h2><p><strong>pom.xml中的两种build</strong></p>
+<ul>
+<li>Project Build, <code>&lt;project&gt;</code>的直接子元素<code>&lt;build&gt;</code></li>
+<li>Profile Build, <code>&lt;profile&gt;</code> 的子元素<code>&lt;build&gt;</code></li>
+</ul>
+<p>Profile Build包含了基本的build元素，而Project Build还包含两个特殊的元素，即各种&lt;…Directory&gt;和&lt;…extensions&gt;。</p>
+<h3 id="共有节点"><a href="#共有节点" class="headerlink" title="共有节点"></a>共有节点</h3><h4 id="直接子节点"><a href="#直接子节点" class="headerlink" title="直接子节点"></a>直接子节点</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">defaultGoal</span>&gt;</span><span class="tag">&lt;/<span class="name">defaultGoal</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">directory</span>&gt;</span><span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">finalName</span>&gt;</span><span class="tag">&lt;/<span class="name">finalName</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li>defaultGoal，执行构建时默认的goal或phase，如jar:jar或者package等</li>
+<li>directory，构建的结果所在的路径，默认为${basedir}/target目录</li>
+<li>finalName，构建的最终结果的名字，该名字可能在其他plugin中被改变</li>
+</ul>
+<h4 id="resources节点"><a href="#resources节点" class="headerlink" title="resources节点"></a>resources节点</h4><p>资源往往不是代码，无需编译，而是一些properties或XML配置文件，构建过程中会往往会将资源文件从源路径复制到指定的目标路径。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filters</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span>&gt;</span><span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">filters</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">targetPath</span>&gt;</span><span class="tag">&lt;/<span class="name">targetPath</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">filtering</span>&gt;</span><span class="tag">&lt;/<span class="name">filtering</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">directory</span>&gt;</span><span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">include</span>&gt;</span><span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">exclude</span>&gt;</span><span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">testResources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">testResources</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>说明：</p>
+<ul>
+<li><p>resources，build过程中涉及的资源文件</p>
+</li>
+<li><p>targetPath，资源文件的目标路径</p>
+</li>
+<li>filtering，构建过程中是否对资源进行过滤，默认false</li>
+<li>directory，资源文件的路径，默认位于${basedir}/src/main/resources/目录下</li>
+<li>includes，一组文件名的匹配模式，被匹配的资源文件将被构建过程处理</li>
+<li><p>excludes，一组文件名的匹配模式，被匹配的资源文件将被构建过程忽略。同时被includes和excludes匹配的资源文件，将被忽略。</p>
+</li>
+<li><p>filters，给出对资源文件进行过滤的属性文件的路径，默认位于${basedir}/src/main/filters/目录下。属性文件中定义若干键值对。在构建过程中，对于资源文件中出现的变量（键），将使用属性文件中该键对应的值替换。</p>
+</li>
+<li>testResources，test过程中涉及的资源文件，默认位于${basedir}/src/test/resources/目录下。这里的资源文件不会被构建到目标构件中</li>
+</ul>
+<h4 id="plugins节点"><a href="#plugins节点" class="headerlink" title="plugins节点"></a>plugins节点</h4><p><code>&lt;plugins&gt;</code>给出构建过程中所用到的插件，例如maven-assembly这个插件, 可以打包成zip、tar.gz等格式：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-assembly-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">encoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">encoding</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">descriptors</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">descriptor</span>&gt;</span>src/main/assembly/package.xml<span class="tag">&lt;/<span class="name">descriptor</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">descriptors</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>c:\\<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">id</span>&gt;</span>make-assembly<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">goal</span>&gt;</span>single<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Project-Build特有的-lt-…Directory-gt"><a href="#Project-Build特有的-lt-…Directory-gt" class="headerlink" title="Project Build特有的&lt;…Directory&gt;"></a>Project Build特有的&lt;…Directory&gt;</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sourceDirectory</span>&gt;</span>$&#123;basedir&#125;/src/main/java<span class="tag">&lt;/<span class="name">sourceDirectory</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scriptSourceDirectory</span>&gt;</span><span class="tag">&lt;/<span class="name">scriptSourceDirectory</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">testSourceDirectory</span>&gt;</span>src/test/java<span class="tag">&lt;/<span class="name">testSourceDirectory</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span><span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">testOutputDirectory</span>&gt;</span><span class="tag">&lt;/<span class="name">testOutputDirectory</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>目录可以使用绝对路径；如果使用相对路径，则所有的相对路径都是在${basedir}目录下。</p>
+<h2 id="Project-Build特有的-lt-extensions-gt"><a href="#Project-Build特有的-lt-extensions-gt" class="headerlink" title="Project Build特有的&lt;extensions&gt;"></a>Project Build特有的<code>&lt;extensions&gt;</code></h2><p><code>&lt;extensions&gt;</code>是执行构建过程中可能用到的其他工具，在执行构建的过程中被加入到classpath中。</p>
+<p>也可以通过<code>&lt;extensions&gt;</code>激活构建插件，从而改变构建的过程。</p>
+<p>通常，通过<code>&lt;extensions&gt;</code>给出通用插件的一个具体实现，用于构建过程。</p>
+<h2 id="Maven仓库"><a href="#Maven仓库" class="headerlink" title="Maven仓库"></a>Maven仓库</h2><p>Maven 仓库有三种类型：</p>
+<ul>
+<li>本地（local）</li>
+<li>中央（central）</li>
+<li>远程（remote）</li>
+</ul>
+<h3 id="本地仓库"><a href="#本地仓库" class="headerlink" title="本地仓库"></a>本地仓库</h3><p>运行 Maven 的时候，Maven 所需要的任何构件都是直接从本地仓库获取的。如果本地仓库没有，它会首先尝试从远程仓库下载构件至本地仓库，然后再使用本地仓库的构件。</p>
+<p>默认情况下，不管Linux还是 Windows，每个用户在自己的用户目录下都有一个路径名为 .m2/respository/ 的仓库目录。</p>
+<p>Maven 本地仓库默认被创建在 %USER_HOME% 目录下。要修改默认位置，在 %M2_HOME%\conf 目录中的 Maven 的 settings.xml 文件中定义另一个路径。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">settings</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/SETTINGS/1.0.0"</span></span></span><br><span class="line"><span class="tag">   <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">   <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/SETTINGS/1.0.0 </span></span></span><br><span class="line"><span class="tag"><span class="string">   http://maven.apache.org/xsd/settings-1.0.0.xsd"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">localRepository</span>&gt;</span>C:/MyLocalRepository<span class="tag">&lt;/<span class="name">localRepository</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">settings</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="中央仓库"><a href="#中央仓库" class="headerlink" title="中央仓库"></a>中央仓库</h3><p>Maven 中央仓库是由 Maven 社区提供的仓库，其中包含了大量常用的库。</p>
+<p>中央仓库包含了绝大多数流行的开源Java构件，以及源码、作者信息、SCM、信息、许可证信息等。一般来说，简单的Java项目依赖的构件都可以在这里下载到。</p>
+<p>中央仓库的关键概念：</p>
+<ul>
+<li>这个仓库由 Maven 社区管理。</li>
+<li>不需要配置。</li>
+<li>需要通过网络才能访问。</li>
+</ul>
+<p>要浏览中央仓库的内容，maven 社区提供了一个 URL：<a href="http://search.maven.org/#browse" target="_blank" rel="noopener">http://search.maven.org/#browse</a>。使用这个仓库，开发人员可以搜索所有可以获取的代码库。</p>
+<h3 id="远程仓库"><a href="#远程仓库" class="headerlink" title="远程仓库"></a>远程仓库</h3><p>如果 Maven 在中央仓库中也找不到依赖的文件，它会停止构建过程并输出错误信息到控制台。为避免这种情况，Maven 提供了远程仓库的概念，它是开发人员自己定制仓库，包含了所需要的代码库或者其他工程中用到的 jar 文件。</p>
+<p>举例说明，使用下面的 pom.xml，Maven 将从远程仓库中下载该 pom.xml 中声明的所依赖的（在中央仓库中获取不到的）文件。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span></span></span><br><span class="line"><span class="tag">   <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">   <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0</span></span></span><br><span class="line"><span class="tag"><span class="string">   http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.companyname.projectgroup<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>project<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.companyname.common-lib<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>common-lib<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">repositories</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">repository</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">id</span>&gt;</span>companyname.lib1<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://download.companyname.org/maven2/lib1<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">repository</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">repositories</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="Maven-依赖搜索顺序"><a href="#Maven-依赖搜索顺序" class="headerlink" title="Maven 依赖搜索顺序"></a>Maven 依赖搜索顺序</h3><p>当我们执行 Maven 构建命令时，Maven 开始按照以下顺序查找依赖的库：</p>
+<ul>
+<li><strong>步骤 1</strong> － 在本地仓库中搜索，如果找不到，执行步骤 2，如果找到了则执行其他操作。</li>
+<li><strong>步骤 2</strong> － 在中央仓库中搜索，如果找不到，并且有一个或多个远程仓库已经设置，则执行步骤 4，如果找到了则下载到本地仓库中以备将来引用。</li>
+<li><strong>步骤 3</strong> － 如果远程仓库没有被设置，Maven 将简单的停滞处理并抛出错误（无法找到依赖的文件）。</li>
+<li><strong>步骤 4</strong> － 在一个或多个远程仓库中搜索依赖的文件，如果找到则下载到本地仓库以备将来引用，否则 Maven 将停止处理并抛出错误（无法找到依赖的文件）。</li>
+</ul>
+<p>在我们的maven配置里面访问的maven私服就属于中心仓库的一个镜像。如果联网一般会使用阿里的maven仓库：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mirrors</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mirror</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">id</span>&gt;</span>alimaven<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">name</span>&gt;</span>aliyun maven<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.aliyun.com/nexus/content/groups/public/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span>        </span><br><span class="line">    <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mirrors</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://monezhao.github.io/2018/05/08/docker-lnmp/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1904,394 +2612,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://monezhao.github.io/2018/03/12/hashmap/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mone Zhao">
-      <meta itemprop="description" content="世界既不黑也不白，而是一道精致的灰。">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mone Zhao 的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/03/12/hashmap/" class="post-title-link" itemprop="url">重新认识 Java 8 HashMap</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-03-12 09:31:43" itemprop="dateCreated datePublished" datetime="2018-03-12T09:31:43+08:00">2018-03-12</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-03-15 04:35:14" itemprop="dateModified" datetime="2018-03-15T04:35:14+08:00">2018-03-15</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-symbolscount">
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">本文字数：</span>
-                
-                <span title="本文字数">16k</span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">26 分钟</span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><p>HashMap是Java程序员使用频率最高的用于映射(键值对)处理的数据类型。随着JDK（Java Developmet Kit）版本的更新，JDK1.8对HashMap底层的实现进行了优化，例如引入红黑树的数据结构和扩容的优化等。本文结合JDK1.7和JDK1.8的区别，深入探讨HashMap的结构实现和功能原理。</p>
-<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Java为数据结构中的映射定义了一个接口java.util.Map，此接口主要有四个常用的实现类，分别是HashMap、Hashtable、LinkedHashMap和TreeMap，类继承关系如下图所示：</p>
-<p><img src="/images/hashmap/java.util.map类图.png" alt="类继承关系"></p>
-<p>下面针对各个实现类的特点做一些说明：</p>
-<ol>
-<li><p>HashMap：它根据键的hashCode值存储数据，大多数情况下可以直接定位到它的值，因而具有很快的访问速度，但遍历顺序却是不确定的。 HashMap最多只允许一条记录的键为null，允许多条记录的值为null。HashMap非线程安全，即任一时刻可以有多个线程同时写HashMap，可能会导致数据的不一致。如果需要满足线程安全，可以用 Collections的synchronizedMap方法使HashMap具有线程安全的能力，或者使用ConcurrentHashMap。</p>
-</li>
-<li><p>Hashtable：Hashtable是遗留类，很多映射的常用功能与HashMap类似，不同的是它承自Dictionary类，并且是线程安全的，任一时间只有一个线程能写Hashtable，并发性不如ConcurrentHashMap，因为ConcurrentHashMap引入了分段锁。Hashtable不建议在新代码中使用，不需要线程安全的场合可以用HashMap替换，需要线程安全的场合可以用ConcurrentHashMap替换。</p>
-</li>
-<li><p>LinkedHashMap：LinkedHashMap是HashMap和双向链表合二为一的HashMap一个子类，保存了记录的插入顺序，在用Iterator遍历LinkedHashMap时，先得到的记录肯定是先插入的，也可以在构造时带参数，按照访问次序排序。</p>
-</li>
-<li><p>TreeMap：TreeMap实现SortedMap接口，能够把它保存的记录根据键排序，默认是按键值的升序排序，也可以指定排序的比较器，当用Iterator遍历TreeMap时，得到的记录是排过序的。如果使用排序的映射，建议使用TreeMap。在使用TreeMap时，key必须实现Comparable接口或者在构造TreeMap传入自定义的Comparator，否则会在运行时抛出java.lang.ClassCastException类型的异常。</p>
-</li>
-</ol>
-<p>对于上述四种Map类型的类，要求映射中的key是不可变对象。不可变对象是该对象在创建后它的哈希值不会被改变。如果对象的哈希值发生变化，Map对象很可能就定位不到映射的位置了。</p>
-<p>通过上面的比较，我们知道了HashMap是Java的Map家族中一个普通成员，鉴于它可以满足大多数场景的使用条件，所以是使用频度最高的一个。下文我们主要结合源码，从存储结构、常用方法分析、扩容以及安全性等方面深入讲解HashMap的工作原理。</p>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2018/03/12/hashmap/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://monezhao.github.io/2018/02/08/apt-shell/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mone Zhao">
-      <meta itemprop="description" content="世界既不黑也不白，而是一道精致的灰。">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mone Zhao 的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/02/08/apt-shell/" class="post-title-link" itemprop="url">Ubuntu apt 更新和清理</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-02-08 20:07:09" itemprop="dateCreated datePublished" datetime="2018-02-08T20:07:09+08:00">2018-02-08</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-03-15 04:35:14" itemprop="dateModified" datetime="2018-03-15T04:35:14+08:00">2018-03-15</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-symbolscount">
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">本文字数：</span>
-                
-                <span title="本文字数">392</span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">1 分钟</span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>apt.sh, 更新清理软件</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sudo aptitude update</span><br><span class="line">sudo aptitude upgrade -y</span><br><span class="line">sudo aptitude autoclean -y</span><br><span class="line">sudo aptitude clean</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"\033[31m aptitude end \033[0m"</span></span><br><span class="line"></span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get upgrade -y</span><br><span class="line">sudo apt-get autoremove -y</span><br><span class="line">sudo apt-get autoclean</span><br><span class="line">sudo apt-get clean</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"\033[31m apt-get end \033[0m"</span></span><br></pre></td></tr></table></figure>
-<p>ls.sh, 查看deb包缓存</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /var/cache/apt/archives</span><br><span class="line"><span class="built_in">pwd</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"==================="</span></span><br><span class="line">ls | grep deb</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2341,7 +2661,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">28</span>
+                    <span class="site-state-item-count">30</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2472,7 +2792,7 @@
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">125k</span>
+    <span title="站点总字数">146k</span>
   
 
   
@@ -2483,7 +2803,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">3:28</span>
+    <span title="站点阅读时长">4:03</span>
   
 </div>
 
