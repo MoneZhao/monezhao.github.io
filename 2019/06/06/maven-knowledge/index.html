@@ -14,7 +14,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-CN">
+<html class="theme-next mist use-motion" lang="zh-CN">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -72,7 +72,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Mist',
     version: '6.7.0',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: false,
@@ -104,7 +104,7 @@
 <meta property="og:site_name" content="Mone Zhao 的博客">
 <meta property="og:description" content="Maven 是 Apache 下的一个纯 Java 开发的项目管理工具，可以对 Java 项目进行构建、依赖管理。 约定配置Maven 提倡使用一个共同的标准目录结构，Maven 使用约定优于配置的原则，大家尽可能的遵守这样的目录结构。如下所示：    目录 作用     ${basedir} 存放pom.xml和所有的子目录   ${basedir}/src/main/java 项目的java源">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-06-06T15:30:24.943Z">
+<meta property="og:updated_time" content="2019-07-25T08:29:23.144Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Maven入门知识">
 <meta name="twitter:description" content="Maven 是 Apache 下的一个纯 Java 开发的项目管理工具，可以对 Java 项目进行构建、依赖管理。 约定配置Maven 提倡使用一个共同的标准目录结构，Maven 使用约定优于配置的原则，大家尽可能的遵守这样的目录结构。如下所示：    目录 作用     ${basedir} 存放pom.xml和所有的子目录   ${basedir}/src/main/java 项目的java源">
@@ -350,6 +350,8 @@
   
 
   
+    <div class="reading-progress-bar"></div>
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
@@ -399,12 +401,24 @@
                 
               
 
-              <time title="创建时间：2019-06-06 20:37:53 / 修改时间：23:30:24" itemprop="dateCreated datePublished" datetime="2019-06-06T20:37:53+08:00">2019-06-06</time>
+              <time title="创建时间：2019-06-06 20:37:53" itemprop="dateCreated datePublished" datetime="2019-06-06T20:37:53+08:00">2019-06-06</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-07-25 16:29:23" itemprop="dateModified" datetime="2019-07-25T16:29:23+08:00">2019-07-25</time>
               
             
           </span>
@@ -513,6 +527,7 @@
 </tr>
 </tbody>
 </table>
+<a id="more"></a>
 <h2 id="Maven-POM"><a href="#Maven-POM" class="headerlink" title="Maven POM"></a>Maven POM</h2><p>POM( Project Object Model，项目对象模型 ) 是 Maven 工程的基本工作单元，是一个XML文件，包含了项目的基本信息，用于描述项目如何构建，声明项目依赖，等等。</p>
 <p>执行任务或目标时，Maven 会在当前目录中查找 POM。它读取 POM，获取所需的配置信息，然后执行目标。</p>
 <p>所有 POM 文件都需要 project 元素和三个必需字段：groupId，artifactId，version。</p>
@@ -792,6 +807,10 @@
           
 
   
+    <div id="gitalk-container">
+    </div>
+    
+  
 
 
 
@@ -841,7 +860,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">30</span>
+                    <span class="site-state-item-count">31</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -882,7 +901,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">13</span>
+                      
+                    
+                    <span class="site-state-item-count">14</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -989,7 +1010,7 @@
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">146k</span>
+    <span title="站点总字数">148k</span>
   
 
   
@@ -1000,7 +1021,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">4:03</span>
+    <span title="站点阅读时长">4:06</span>
   
 </div>
 
@@ -1076,6 +1097,8 @@
 
 
 
+  
+
 
 
   
@@ -1086,6 +1109,9 @@
 
   
   <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/reading_progress/reading_progress.js"></script>
 
 
   
@@ -1127,6 +1153,32 @@
 
 
 
+
+
+  
+  
+  <script src="//cdn.jsdelivr.net/npm/gitalk@1.4.0/dist/gitalk.min.js"></script>
+
+  
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.4.0/dist/gitalk.css">
+
+  
+  
+  <script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+
+   <script>
+        var gitalk = new Gitalk({
+          clientID: '454060c77ab21fa02bc0',
+          clientSecret: '2f95b7c2f7d21bb15cd0dce2884778a15fc3f0f7',
+          repo: 'monezhao.github.io',
+          owner: 'MoneZhao',
+          admin: ['MoneZhao'],
+          id: md5(location.pathname),
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')
+       </script>
 
 
   
@@ -1483,3 +1535,5 @@
 
 </body>
 </html>
+<script type="text/javascript" src="/js/src/crash_cheat.js"></script>
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
