@@ -355,6 +355,209 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://monezhao.github.io/2018/03/13/concurrenthashmap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mone Zhao">
+      <meta itemprop="description" content="世界既不黑也不白，而是一道精致的灰。">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mone Zhao 的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/03/13/concurrenthashmap/" class="post-title-link" itemprop="url">ConcurrentHashMap 从 Java 7 到 Java 8</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-03-13 10:19:39" itemprop="dateCreated datePublished" datetime="2018-03-13T10:19:39+08:00">2018-03-13</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-11 19:55:56" itemprop="dateModified" datetime="2019-04-11T19:55:56+08:00">2019-04-11</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">38k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">1:04</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Happens-before-关系"><a href="#Happens-before-关系" class="headerlink" title="Happens-before 关系"></a>Happens-before 关系</h1><p>happens-before 关系保证：如果线程 A 与线程 B 满足 happens-before 关系，则线程 A 执行动作的结果对于线程 B 是可见的。如果两个操作未按 happens-before 排序，JVM 将可以对他们任意重排序。</p>
+<p>下面介绍几个与理解 ConcurrentHashMap 有关的 happens-before 关系法则：</p>
+<ol>
+<li>程序次序法则：如果在程序中，所有动作 A 出现在动作 B 之前，则线程中的每动作 A 都 happens-before 于该线程中的每一个动作 B。</li>
+<li>监视器锁法则：对一个监视器的解锁 happens-before 于每个后续对同一监视器的加锁。</li>
+<li>Volatile 变量法则：对 Volatile 域的写入操作 happens-before 于每个后续对同一 Volatile 的读操作。</li>
+<li>传递性：如果 A happens-before 于 B，且 B happens-before C，则 A happens-before C。</li>
+</ol>
+<h1 id="Java-7基于分段锁的ConcurrentHashMap"><a href="#Java-7基于分段锁的ConcurrentHashMap" class="headerlink" title="Java 7基于分段锁的ConcurrentHashMap"></a>Java 7基于分段锁的ConcurrentHashMap</h1><h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>Java 7中的ConcurrentHashMap 类中包含两个静态内部类 HashEntry 和 Segment。HashEntry 用来封装映射表的键 / 值对；Segment 用来充当锁的角色，每个 Segment 对象守护整个散列映射表的若干个桶。每个桶是由若干个 HashEntry 对象链接起来的链表。一个 ConcurrentHashMap 实例中包含由若干个 Segment 对象组成的数组。</p>
+<ol>
+<li>最大的分段（segment）数为2的16次方，每一个segment的HashEntry[]的最大容量为2的30次方。</li>
+<li>默认的分段数和每个segment的HashEntry[]的初始容量均为16。segment的默认加载因子为0.75。</li>
+<li>定位segment段需要用的两个参数：segmentMask，segmentShift。</li>
+</ol>
+<p>整体数据结构如下图所示：</p>
+<p><img src="/images/concurrenthashmap/java7数据结构.png" alt="java7数据结构"></p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2018/03/13/concurrenthashmap/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://monezhao.github.io/2018/03/12/thread/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2089,204 +2292,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://monezhao.github.io/2017/09/02/ReentrantLock/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mone Zhao">
-      <meta itemprop="description" content="世界既不黑也不白，而是一道精致的灰。">
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mone Zhao 的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/09/02/ReentrantLock/" class="post-title-link" itemprop="url">ReentrantLock - 可重入互斥锁</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2017-09-02 15:41:25" itemprop="dateCreated datePublished" datetime="2017-09-02T15:41:25+08:00">2017-09-02</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-04-25 20:49:58" itemprop="dateModified" datetime="2018-04-25T20:49:58+08:00">2018-04-25</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-symbolscount">
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">本文字数：</span>
-                
-                <span title="本文字数">823</span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">1 分钟</span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="锁的可重入性"><a href="#锁的可重入性" class="headerlink" title="锁的可重入性"></a>锁的可重入性</h2><p>先举例来说明锁的可重入性：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnReentrant</span></span>&#123;</span><br><span class="line">    Lock lock = <span class="keyword">new</span> Lock();</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">outer</span><span class="params">()</span></span>&#123;</span><br><span class="line">        lock.lock();</span><br><span class="line">        inner();</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">inner</span><span class="params">()</span></span>&#123;</span><br><span class="line">        lock.lock();</span><br><span class="line">        <span class="comment">//do something</span></span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>outer 中调用了 inner, outer 先锁住了 lock, 这样 inner 就不能再获取 lock。其实调用 outer 的线程已经获取了 lock 锁, 但是不能在 inner 中重复利用已经获取的锁资源, 这种锁即称之为 <code>不可重入</code> 。通常也称为 <code>自旋锁</code> 。相对来说, 可重入就意味着：线程可以进入任何一个它已经拥有的锁所同步着的代码块。</p>
-<h2 id="ReentrantLock-相比-synchronized-有如下几个优势"><a href="#ReentrantLock-相比-synchronized-有如下几个优势" class="headerlink" title="ReentrantLock 相比 synchronized 有如下几个优势"></a>ReentrantLock 相比 synchronized 有如下几个优势</h2><ol>
-<li><p>可以反复进入, 同一个线程获得几个锁, 在释放的时候也需要同等释放, 要不然会死锁的（其实 synchronized 也是可重入的）；</p>
-</li>
-<li><p>支持锁中断 lockInterruptiblity(), 防死锁, 优先响应中断；</p>
-</li>
-<li><p>支持限时获取锁, lock.tryLock(int,TimeUnit); 在给定的时间范围捏尝试获取锁；</p>
-</li>
-<li><p>支持尝试获取锁, tryLock 不带参数, 如果获取不到则立刻返回 false, 而不等待锁；</p>
-</li>
-<li><p>公平锁 ReentrantLock(boolean fair), 排队获取锁, 性能相对低下；</p>
-</li>
-<li><p>配合 Condition, 可以让线程在合适的时间等待, 得到通知后继续执行。</p>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2336,7 +2341,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-count">32</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2469,7 +2474,7 @@
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">148k</span>
+    <span title="站点总字数">153k</span>
   
 
   
@@ -2480,7 +2485,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">4:06</span>
+    <span title="站点阅读时长">4:14</span>
   
 </div>
 
