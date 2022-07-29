@@ -104,7 +104,7 @@
 <meta property="og:site_name" content="Mone Zhao 的博客">
 <meta property="og:description" content="前言在Java对象的创建时，单例模式使用尤其多，同时也是个面试必问的基础题。很多时候面试官想问的无非是懒汉式的双重检验锁。但是其实还有两种更加直观高效的写法，也是《Effective Java》中所推荐的写法。 静态内部类(static nested class)12345678910111213public class Singleton &amp;#123;  private static class">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-04-25T12:49:58.000Z">
+<meta property="og:updated_time" content="2022-07-29T01:28:35.906Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java 单例模式的两种高效写法">
 <meta name="twitter:description" content="前言在Java对象的创建时，单例模式使用尤其多，同时也是个面试必问的基础题。很多时候面试官想问的无非是懒汉式的双重检验锁。但是其实还有两种更加直观高效的写法，也是《Effective Java》中所推荐的写法。 静态内部类(static nested class)12345678910111213public class Singleton &amp;#123;  private static class">
@@ -245,7 +245,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">32</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">33</span></a>
 
   </li>
         
@@ -370,7 +370,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Mone Zhao">
-      <meta itemprop="description" content="世界既不黑也不白，而是一道精致的灰。">
+      <meta itemprop="description" content="世界既不黑也不白，而是一道精致的灰">
       <meta itemprop="image" content="/images/avatar.png">
     </span>
 
@@ -426,7 +426,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-04-25 20:49:58" itemprop="dateModified" datetime="2018-04-25T20:49:58+08:00">2018-04-25</time>
+                <time title="修改时间：2022-07-29 09:28:35" itemprop="dateModified" datetime="2022-07-29T09:28:35+08:00">2022-07-29</time>
               
             
           </span>
@@ -494,11 +494,11 @@
       
 
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在Java对象的创建时，单例模式使用尤其多，同时也是个面试必问的基础题。很多时候面试官想问的无非是懒汉式的双重检验锁。但是其实还有两种更加直观高效的写法，也是《Effective Java》中所推荐的写法。</p>
-<h1 id="静态内部类-static-nested-class"><a href="#静态内部类-static-nested-class" class="headerlink" title="静态内部类(static nested class)"></a>静态内部类(static nested class)</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHolder</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton INSTANCE = <span class="keyword">new</span> Singleton();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> SingletonHolder.INSTANCE;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在Java对象的创建时，单例模式使用尤其多，同时也是个面试必问的基础题。很多时候面试官想问的无非是懒汉式的双重检验锁。但是其实还有两种更加直观高效的写法，也是《Effective Java》中所推荐的写法。</p>
+<h2 id="静态内部类-static-nested-class"><a href="#静态内部类-static-nested-class" class="headerlink" title="静态内部类(static nested class)"></a>静态内部类(static nested class)</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHolder</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton INSTANCE = <span class="keyword">new</span> Singleton();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> SingletonHolder.INSTANCE;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这种写法仍然使用JVM本身机制保证了线程安全问题；由于 SingletonHolder 是私有的，除了 getInstance() 之外没有办法访问它，因此它是懒汉式的；同时读取实例的时候不会进行同步，没有性能缺陷；也不依赖 JDK 版本。</p>
 <a id="more"></a>
-<h1 id="枚举-Enum"><a href="#枚举-Enum" class="headerlink" title="枚举 Enum"></a>枚举 Enum</h1><p>在《Effective Java》最后推荐了这样一个写法，简直有点颠覆，不仅超级简单，而且保证了现场安全。这里引用一下，此方法无偿提供了序列化机制，绝对防止多次实例化，及时面对复杂的序列化或者反射攻击。单元素枚举类型已经成为实现Singleton的最佳方法。</p>
+<h2 id="枚举-Enum"><a href="#枚举-Enum" class="headerlink" title="枚举 Enum"></a>枚举 Enum</h2><p>在《Effective Java》最后推荐了这样一个写法，简直有点颠覆，不仅超级简单，而且保证了现场安全。这里引用一下，此方法无偿提供了序列化机制，绝对防止多次实例化，及时面对复杂的序列化或者反射攻击。单元素枚举类型已经成为实现Singleton的最佳方法。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Singleton &#123;</span><br><span class="line">  INSTANCE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>对于一个标准的enum单例模式，最优秀的写法还是实现接口的形式:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义单例模式中需要完成的代码逻辑</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MySingleton</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Singleton implements MySingleton &#123;</span><br><span class="line">  INSTANCE &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"complete singleton"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> MySingleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Singleton.INSTANCE;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -645,7 +645,7 @@
               <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="Mone Zhao">
             
               <p class="site-author-name" itemprop="name">Mone Zhao</p>
-              <p class="site-description motion-element" itemprop="description">世界既不黑也不白，而是一道精致的灰。</p>
+              <p class="site-description motion-element" itemprop="description">世界既不黑也不白，而是一道精致的灰</p>
           </div>
 
           
@@ -655,7 +655,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">32</span>
+                    <span class="site-state-item-count">33</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -771,7 +771,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#静态内部类-static-nested-class"><span class="nav-number">2.</span> <span class="nav-text">静态内部类(static nested class)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#枚举-Enum"><span class="nav-number">3.</span> <span class="nav-text">枚举 Enum</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#静态内部类-static-nested-class"><span class="nav-number">2.</span> <span class="nav-text">静态内部类(static nested class)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#枚举-Enum"><span class="nav-number">3.</span> <span class="nav-text">枚举 Enum</span></a></li></ol></div>
             
 
           </div>
@@ -805,7 +805,7 @@
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">155k</span>
+    <span title="站点总字数">157k</span>
   
 
   
@@ -816,7 +816,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">4:18</span>
+    <span title="站点阅读时长">4:22</span>
   
 </div>
 

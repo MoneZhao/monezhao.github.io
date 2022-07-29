@@ -105,7 +105,7 @@
 <meta property="og:description" content="概述BIO是面向字节流和字符流的，数据从流中顺序获取 NIO是面向通道和缓冲区的，数据总是从通道中读到buffer缓冲区内，或者从buffer缓冲区内写入通道 Channel通道和Buffer缓冲区是NIO的核心，几乎在每一个IO操作中使用它们，Selector选择器则允许单个线程操作多个通道，对于高并发多连接很有帮助。  操作系统的IO一般分为两个阶段，等待和就绪操作，比如读可以分为等待系统可读">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://monezhao.github.io/images/nio/buffer_modes.png">
-<meta property="og:updated_time" content="2018-03-15T18:11:12.000Z">
+<meta property="og:updated_time" content="2022-07-29T01:27:10.041Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java NIO详解">
 <meta name="twitter:description" content="概述BIO是面向字节流和字符流的，数据从流中顺序获取 NIO是面向通道和缓冲区的，数据总是从通道中读到buffer缓冲区内，或者从buffer缓冲区内写入通道 Channel通道和Buffer缓冲区是NIO的核心，几乎在每一个IO操作中使用它们，Selector选择器则允许单个线程操作多个通道，对于高并发多连接很有帮助。  操作系统的IO一般分为两个阶段，等待和就绪操作，比如读可以分为等待系统可读">
@@ -247,7 +247,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">32</span></a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">33</span></a>
 
   </li>
         
@@ -372,7 +372,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Mone Zhao">
-      <meta itemprop="description" content="世界既不黑也不白，而是一道精致的灰。">
+      <meta itemprop="description" content="世界既不黑也不白，而是一道精致的灰">
       <meta itemprop="image" content="/images/avatar.png">
     </span>
 
@@ -411,12 +411,24 @@
                 
               
 
-              <time title="创建时间：2018-03-16 22:26:43 / 修改时间：02:11:12" itemprop="dateCreated datePublished" datetime="2018-03-16T22:26:43+08:00">2018-03-16</time>
+              <time title="创建时间：2018-03-16 22:26:43" itemprop="dateCreated datePublished" datetime="2018-03-16T22:26:43+08:00">2018-03-16</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2022-07-29 09:27:10" itemprop="dateModified" datetime="2022-07-29T09:27:10+08:00">2022-07-29</time>
               
             
           </span>
@@ -484,30 +496,30 @@
       
 
       
-        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>BIO是面向字节流和字符流的，数据从流中顺序获取</p>
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>BIO是面向字节流和字符流的，数据从流中顺序获取</p>
 <p>NIO是面向通道和缓冲区的，数据总是从通道中读到buffer缓冲区内，或者从buffer缓冲区内写入通道</p>
 <p>Channel通道和Buffer缓冲区是NIO的核心，几乎在每一个IO操作中使用它们，Selector选择器则允许单个线程操作多个通道，对于高并发多连接很有帮助。</p>
 <blockquote>
 <p>操作系统的IO一般分为两个阶段，等待和就绪操作，比如读可以分为等待系统可读和真正的读，写可以分为等待系统可写和真正的写，在传统的BIO中是这两个阶段都会阻塞，在NIO中第一个阶段不是阻塞的，第二个阶段是阻塞的，如下图，BIO是阻塞IO，NIO是非阻塞IO</p>
 </blockquote>
 <a id="more"></a>
-<h1 id="Buffer（缓冲区）"><a href="#Buffer（缓冲区）" class="headerlink" title="Buffer（缓冲区）"></a>Buffer（缓冲区）</h1><h2 id="常用Buffer类型"><a href="#常用Buffer类型" class="headerlink" title="常用Buffer类型"></a>常用Buffer类型</h2><p>ByteBuffer, MappedByteBuffer, CharBuffer, DoubleBuffer, FloatBuffer, IntBuffer, LongBuffer, ShortBuffer。对应了几大基本数据类型。</p>
+<h2 id="Buffer（缓冲区）"><a href="#Buffer（缓冲区）" class="headerlink" title="Buffer（缓冲区）"></a>Buffer（缓冲区）</h2><h3 id="常用Buffer类型"><a href="#常用Buffer类型" class="headerlink" title="常用Buffer类型"></a>常用Buffer类型</h3><p>ByteBuffer, MappedByteBuffer, CharBuffer, DoubleBuffer, FloatBuffer, IntBuffer, LongBuffer, ShortBuffer。对应了几大基本数据类型。</p>
 <blockquote>
 <p>ByteBuffer可以选择实例化为DirectByteBuffer和HeapByteBuffer，如果数据量比较小的中小应用情况下，可以考虑使用heapBuffer；反之可以用directBuffer。一般来说DirectByteBuffer可以减少一次系统空间到用户空间的拷贝。但Buffer创建和销毁的成本更高，更不宜维护，通常会用内存池来提高性能。其他buffer类似。</p>
 </blockquote>
-<h2 id="利用Buffer读写数据步骤"><a href="#利用Buffer读写数据步骤" class="headerlink" title="利用Buffer读写数据步骤"></a>利用Buffer读写数据步骤</h2><ol>
+<h3 id="利用Buffer读写数据步骤"><a href="#利用Buffer读写数据步骤" class="headerlink" title="利用Buffer读写数据步骤"></a>利用Buffer读写数据步骤</h3><ol>
 <li>将数据写入buffer</li>
 <li>调用flip将写模式改为读模式</li>
 <li>从buffer中读取数据，进行操作</li>
 <li>调用clear()清除整个buffer数据或者调用compact()清空已读数据</li>
 </ol>
-<h2 id="buffer的属性"><a href="#buffer的属性" class="headerlink" title="buffer的属性"></a>buffer的属性</h2><ul>
+<h3 id="buffer的属性"><a href="#buffer的属性" class="headerlink" title="buffer的属性"></a>buffer的属性</h3><ul>
 <li>capacity容量，该buffer最多存储的字节数</li>
 <li>position位置，写模式下，position从0到capacity-1，变更为读模式后，position归零，边读边移动</li>
 <li>limit限制，写模式下，代表我们能写的最大量为capacity，读模式下，变更为原position位置，即有数据的位置</li>
 </ul>
 <p><img src="/images/nio/buffer_modes.png" alt="buffer_modes"></p>
-<h2 id="buffer-api"><a href="#buffer-api" class="headerlink" title="buffer api"></a>buffer api</h2><ul>
+<h3 id="buffer-api"><a href="#buffer-api" class="headerlink" title="buffer api"></a>buffer api</h3><ul>
 <li>通过allocate()方法为buffer分配内存大小，如开辟一个48字节的ByteBuffer buffer：ByteBuffer.allocate(48)</li>
 <li>写数据可以通过通道写，如：FileChannel.read(buffer)；也可以通过put方法来写数据，如：buffer.put(127)</li>
 <li>flip()翻转方法，将写模式切换到读模式，position归零，设置limit为之前的position位置</li>
@@ -519,13 +531,13 @@
 <li>equals()两个buffer相等需满足，类型相同，buffer剩余（未读）字节数相同，所有剩余字节数相同</li>
 <li>compareTo()比较buffer中的剩余元素，只不过此方法适合排序</li>
 </ul>
-<h1 id="Channel（通道）"><a href="#Channel（通道）" class="headerlink" title="Channel（通道）"></a>Channel（通道）</h1><h2 id="Channel的重要实现"><a href="#Channel的重要实现" class="headerlink" title="Channel的重要实现"></a>Channel的重要实现</h2><ul>
+<h2 id="Channel（通道）"><a href="#Channel（通道）" class="headerlink" title="Channel（通道）"></a>Channel（通道）</h2><h3 id="Channel的重要实现"><a href="#Channel的重要实现" class="headerlink" title="Channel的重要实现"></a>Channel的重要实现</h3><ul>
 <li>FileChannel用于文件数据的读写，transferTo()方法可以将通道的数据传送至另外一个通道，完成数据的复制</li>
 <li>DatagramChannel用于UDP数据的读写</li>
 <li>SocketChannel用于TCP的数据读写，通常我们所说的客户端套接字通道</li>
 <li>ServerSocketChannel允许我们监听TCP链接请求，通常我们所说的服务端套接字通道，每一个请求都会创建一个SocketChannel</li>
 </ul>
-<h2 id="Scatter和Gather"><a href="#Scatter和Gather" class="headerlink" title="Scatter和Gather"></a>Scatter和Gather</h2><p>Java nio在Channel实现类也实现了Scatter和Gather相关类</p>
+<h3 id="Scatter和Gather"><a href="#Scatter和Gather" class="headerlink" title="Scatter和Gather"></a>Scatter和Gather</h3><p>Java nio在Channel实现类也实现了Scatter和Gather相关类</p>
 <ul>
 <li>Scatter.read()是从通道读取的操作能把数据写入多个buffer，即一个通道向多个buffer写数据的过程，但是read必须写满一个buffer后才会向后移动到下一个buffer，因此read不适合大小会动态改变的数据。代码如下：</li>
 </ul>
@@ -533,14 +545,14 @@
 <p>channel.read(bufferArray);<br>Gather.write()是从可以把多个buffer的数据写入通道，write是只会写position到limit之间的数据，因此写是可以适应大小动态改变的数据。代码如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ByteBuffer header = ByteBuffer.allocate(<span class="number">128</span>);</span><br><span class="line">ByteBuffer body = ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line"><span class="comment">//write data into buffers</span></span><br><span class="line">ByteBuffer[] bufferArray = &#123; header, body &#125;;</span><br><span class="line">channel.write(bufferArray);</span><br></pre></td></tr></table></figure>
 <p>在有些场景会非常有用，比如处理多份需要分开传输的数据，举例来说，假设一个消息包含了header和body，我们可能会把header和body分别放在不同的buffer</p>
-<h1 id="Selector（选择器）"><a href="#Selector（选择器）" class="headerlink" title="Selector（选择器）"></a>Selector（选择器）</h1><p>Selector用于检查一个或多个NIO Channel的状态是否可读可写，这样就可以实现单线程管理多个Channels，也就是可以管理多个网络连接，NIO非阻塞主要就是通过Selector注册事件监听，监听通道将数据就绪后，就进行实际的读写操作，因此前面说的IO两个阶段，一阶段NIO仅仅是异步监听，二阶段就是同步实际操作数据。</p>
-<h2 id="Selector监听事件类别"><a href="#Selector监听事件类别" class="headerlink" title="Selector监听事件类别"></a>Selector监听事件类别</h2><ul>
+<h2 id="Selector（选择器）"><a href="#Selector（选择器）" class="headerlink" title="Selector（选择器）"></a>Selector（选择器）</h2><p>Selector用于检查一个或多个NIO Channel的状态是否可读可写，这样就可以实现单线程管理多个Channels，也就是可以管理多个网络连接，NIO非阻塞主要就是通过Selector注册事件监听，监听通道将数据就绪后，就进行实际的读写操作，因此前面说的IO两个阶段，一阶段NIO仅仅是异步监听，二阶段就是同步实际操作数据。</p>
+<h3 id="Selector监听事件类别"><a href="#Selector监听事件类别" class="headerlink" title="Selector监听事件类别"></a>Selector监听事件类别</h3><ul>
 <li>SelectionKey.OP_CONNECT是Channel和server连接成功后，连接就绪</li>
 <li>SelectionKey.OP_ACCEPT是server Channel接收请求连接就绪</li>
 <li>SelectionKey.OP_READ是Channel有数据可读时，处于读就绪</li>
 <li>SelectionKey.OP_WRITE是Channel可以进行数据写入是，写就绪</li>
 </ul>
-<h2 id="使用Selector的步骤"><a href="#使用Selector的步骤" class="headerlink" title="使用Selector的步骤"></a>使用Selector的步骤</h2><ul>
+<h3 id="使用Selector的步骤"><a href="#使用Selector的步骤" class="headerlink" title="使用Selector的步骤"></a>使用Selector的步骤</h3><ul>
 <li>创建一个Selector，Selector selector = Selector.open();</li>
 <li>注册Channel到Selector上面，将Channel切换为非阻塞的：channel.configureBlocking(false)，然后绑定Selector：SelectionKey key = channel.register(selector, SelectionKey.OP_READ);</li>
 <li>SelectionKey.OP_READ为监听的事件类别，如果要监听多个事件，可利用位的或运算结合多个常量如：int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;</li>
@@ -550,7 +562,7 @@
 <blockquote>
 <p>需要使用Selector的Channel必须是非阻塞的，FileChannel不能切换为非租塞的，因此FileChannel不适用于Selector</p>
 </blockquote>
-<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><ul>
+<h3 id="API"><a href="#API" class="headerlink" title="API"></a>API</h3><ul>
 <li>Selector.select()方法是阻塞的，因此可以放心的将它写在while(true)中，不用担心cpu会空转</li>
 <li>Selector.wakeup()唤醒select()造成的阻塞，可能是有新的事件注册，优先级更高的事件触发（如定时器事件），希望及时处理。其原理是向通道或者连接中写入一个字节，阻塞的select因为有IO事件就绪，立即返回</li>
 </ul>
@@ -697,7 +709,7 @@
               <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="Mone Zhao">
             
               <p class="site-author-name" itemprop="name">Mone Zhao</p>
-              <p class="site-description motion-element" itemprop="description">世界既不黑也不白，而是一道精致的灰。</p>
+              <p class="site-description motion-element" itemprop="description">世界既不黑也不白，而是一道精致的灰</p>
           </div>
 
           
@@ -707,7 +719,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">32</span>
+                    <span class="site-state-item-count">33</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -823,7 +835,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Buffer（缓冲区）"><span class="nav-number">2.</span> <span class="nav-text">Buffer（缓冲区）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用Buffer类型"><span class="nav-number">2.1.</span> <span class="nav-text">常用Buffer类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用Buffer读写数据步骤"><span class="nav-number">2.2.</span> <span class="nav-text">利用Buffer读写数据步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#buffer的属性"><span class="nav-number">2.3.</span> <span class="nav-text">buffer的属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#buffer-api"><span class="nav-number">2.4.</span> <span class="nav-text">buffer api</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Channel（通道）"><span class="nav-number">3.</span> <span class="nav-text">Channel（通道）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Channel的重要实现"><span class="nav-number">3.1.</span> <span class="nav-text">Channel的重要实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scatter和Gather"><span class="nav-number">3.2.</span> <span class="nav-text">Scatter和Gather</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Selector（选择器）"><span class="nav-number">4.</span> <span class="nav-text">Selector（选择器）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Selector监听事件类别"><span class="nav-number">4.1.</span> <span class="nav-text">Selector监听事件类别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Selector的步骤"><span class="nav-number">4.2.</span> <span class="nav-text">使用Selector的步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API"><span class="nav-number">4.3.</span> <span class="nav-text">API</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Buffer（缓冲区）"><span class="nav-number">2.</span> <span class="nav-text">Buffer（缓冲区）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用Buffer类型"><span class="nav-number">2.1.</span> <span class="nav-text">常用Buffer类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用Buffer读写数据步骤"><span class="nav-number">2.2.</span> <span class="nav-text">利用Buffer读写数据步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#buffer的属性"><span class="nav-number">2.3.</span> <span class="nav-text">buffer的属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#buffer-api"><span class="nav-number">2.4.</span> <span class="nav-text">buffer api</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Channel（通道）"><span class="nav-number">3.</span> <span class="nav-text">Channel（通道）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Channel的重要实现"><span class="nav-number">3.1.</span> <span class="nav-text">Channel的重要实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scatter和Gather"><span class="nav-number">3.2.</span> <span class="nav-text">Scatter和Gather</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Selector（选择器）"><span class="nav-number">4.</span> <span class="nav-text">Selector（选择器）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Selector监听事件类别"><span class="nav-number">4.1.</span> <span class="nav-text">Selector监听事件类别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Selector的步骤"><span class="nav-number">4.2.</span> <span class="nav-text">使用Selector的步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API"><span class="nav-number">4.3.</span> <span class="nav-text">API</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -857,7 +869,7 @@
     
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">155k</span>
+    <span title="站点总字数">157k</span>
   
 
   
@@ -868,7 +880,7 @@
     
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">4:18</span>
+    <span title="站点阅读时长">4:22</span>
   
 </div>
 
