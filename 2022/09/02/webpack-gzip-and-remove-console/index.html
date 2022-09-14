@@ -106,7 +106,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://monezhao.github.io/images/webpack/js_gzip.png">
 <meta property="og:image" content="https://monezhao.github.io/images/webpack/css_gzip.png">
-<meta property="og:updated_time" content="2022-09-02T01:08:45.361Z">
+<meta property="og:updated_time" content="2022-09-09T07:42:03.448Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Webpack打包优化">
 <meta name="twitter:description" content="引言随着项目的功能不断增加, webpack打包后文件体积变得非常大, 超过1M的文件让首次访问加载页面时比较慢, 耗时6.5s左右, 所以需要优化一下. 同时, 项目中有很多console.log, debugger, 需要在打包的时候去掉.">
@@ -412,12 +412,24 @@
                 
               
 
-              <time title="创建时间：2022-09-02 07:54:50 / 修改时间：09:08:45" itemprop="dateCreated datePublished" datetime="2022-09-02T07:54:50+08:00">2022-09-02</time>
+              <time title="创建时间：2022-09-02 07:54:50" itemprop="dateCreated datePublished" datetime="2022-09-02T07:54:50+08:00">2022-09-02</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2022-09-09 15:42:03" itemprop="dateModified" datetime="2022-09-09T15:42:03+08:00">2022-09-09</time>
               
             
           </span>
@@ -498,7 +510,7 @@
 <p><code>vue-cli</code>工具中已经引入了<code>terser-webpack-plugin</code>, 因此在项目中可以直接引入<code>terser-webpack-plugin</code>, 无需安装.</p>
 </blockquote>
 <p><code>vue.config.js</code>中配置</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> TerserPlugin = <span class="built_in">require</span>(<span class="string">'terser-webpack-plugin'</span>)</span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  configureWebpack: &#123;</span><br><span class="line">    performance: &#123;</span><br><span class="line">      hints: <span class="literal">false</span></span><br><span class="line">    &#125;,</span><br><span class="line">    optimization: &#123;</span><br><span class="line">      minimize: <span class="literal">true</span>,</span><br><span class="line">      minimizer: [</span><br><span class="line">        <span class="keyword">new</span> TerserPlugin(&#123;</span><br><span class="line">          parallel: <span class="literal">true</span>,</span><br><span class="line">          terserOptions: &#123;</span><br><span class="line">            compress: &#123;</span><br><span class="line">              drop_console: <span class="literal">true</span>, <span class="comment">// 移除所有console相关代码；</span></span><br><span class="line">              drop_debugger: <span class="literal">true</span>, <span class="comment">// 移除自动断点功能；</span></span><br><span class="line">              pure_funcs: [<span class="string">'console.log'</span>, <span class="string">'console.error'</span>]<span class="comment">// 配置移除指定的指令，如console.log,alert等</span></span><br><span class="line">            &#125;,</span><br><span class="line">            format: &#123;</span><br><span class="line">              comments: <span class="literal">false</span></span><br><span class="line">            &#125;</span><br><span class="line">          &#125;,</span><br><span class="line">          extractComments: <span class="literal">false</span></span><br><span class="line">        &#125;)</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> TerserPlugin = <span class="built_in">require</span>(<span class="string">'terser-webpack-plugin'</span>)</span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  configureWebpack: &#123;</span><br><span class="line">    performance: &#123;</span><br><span class="line">      hints: <span class="literal">false</span></span><br><span class="line">    &#125;,</span><br><span class="line">    optimization: &#123;</span><br><span class="line">      minimize: process.env.NODE_ENV === <span class="string">'production'</span>,</span><br><span class="line">      minimizer: [</span><br><span class="line">        <span class="keyword">new</span> TerserPlugin(&#123;</span><br><span class="line">          parallel: <span class="literal">true</span>,</span><br><span class="line">          terserOptions: &#123;</span><br><span class="line">            compress: &#123;</span><br><span class="line">              drop_console: <span class="literal">true</span>, <span class="comment">// 移除所有console相关代码；</span></span><br><span class="line">              drop_debugger: <span class="literal">true</span>, <span class="comment">// 移除自动断点功能；</span></span><br><span class="line">              pure_funcs: [<span class="string">'console.log'</span>, <span class="string">'console.error'</span>]<span class="comment">// 配置移除指定的指令，如console.log,alert等</span></span><br><span class="line">            &#125;,</span><br><span class="line">            format: &#123;</span><br><span class="line">              comments: <span class="literal">false</span></span><br><span class="line">            &#125;</span><br><span class="line">          &#125;,</span><br><span class="line">          extractComments: <span class="literal">false</span></span><br><span class="line">        &#125;)</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
