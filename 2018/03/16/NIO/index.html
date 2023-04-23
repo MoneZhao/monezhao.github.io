@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"monezhao.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"manual"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":3,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="概述BIO是面向字节流和字符流的，数据从流中顺序获取 NIO是面向通道和缓冲区的，数据总是从通道中读到buffer缓冲区内，或者从buffer缓冲区内写入通道 Channel通道和Buffer缓冲区是NIO的核心，几乎在每一个IO操作中使用它们，Selector选择器则允许单个线程操作多个通道，对于高并发多连接很有帮助。  操作系统的IO一般分为两个阶段，等待和就绪操作，比如读可以分为等待系统可读">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java NIO详解">
+<meta property="og:url" content="https://monezhao.github.io/2018/03/16/NIO/index.html">
+<meta property="og:site_name" content="Mone Zhao的博客">
+<meta property="og:description" content="概述BIO是面向字节流和字符流的，数据从流中顺序获取 NIO是面向通道和缓冲区的，数据总是从通道中读到buffer缓冲区内，或者从buffer缓冲区内写入通道 Channel通道和Buffer缓冲区是NIO的核心，几乎在每一个IO操作中使用它们，Selector选择器则允许单个线程操作多个通道，对于高并发多连接很有帮助。  操作系统的IO一般分为两个阶段，等待和就绪操作，比如读可以分为等待系统可读">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://monezhao.github.io/images/nio/buffer_modes.png">
+<meta property="article:published_time" content="2018-03-16T14:26:43.000Z">
+<meta property="article:modified_time" content="2022-07-29T11:53:05.586Z">
+<meta property="article:author" content="Mone Zhao">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://monezhao.github.io/images/nio/buffer_modes.png">
+
+<link rel="canonical" href="https://monezhao.github.io/2018/03/16/NIO/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Java NIO详解 | Mone Zhao的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Mone Zhao的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Java, VueJS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">35</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">16</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://monezhao.github.io/2018/03/16/NIO/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Mone Zhao">
+      <meta itemprop="description" content="世界既不黑也不白，而是一道精致的灰">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mone Zhao的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java NIO详解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-03-16 22:26:43" itemprop="dateCreated datePublished" datetime="2018-03-16T22:26:43+08:00">2018-03-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-29 19:53:05" itemprop="dateModified" datetime="2022-07-29T19:53:05+08:00">2022-07-29</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>0</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>BIO是面向字节流和字符流的，数据从流中顺序获取</p>
+<p>NIO是面向通道和缓冲区的，数据总是从通道中读到buffer缓冲区内，或者从buffer缓冲区内写入通道</p>
+<p>Channel通道和Buffer缓冲区是NIO的核心，几乎在每一个IO操作中使用它们，Selector选择器则允许单个线程操作多个通道，对于高并发多连接很有帮助。</p>
+<blockquote>
+<p>操作系统的IO一般分为两个阶段，等待和就绪操作，比如读可以分为等待系统可读和真正的读，写可以分为等待系统可写和真正的写，在传统的BIO中是这两个阶段都会阻塞，在NIO中第一个阶段不是阻塞的，第二个阶段是阻塞的，如下图，BIO是阻塞IO，NIO是非阻塞IO</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="Buffer（缓冲区）"><a href="#Buffer（缓冲区）" class="headerlink" title="Buffer（缓冲区）"></a>Buffer（缓冲区）</h2><h3 id="常用Buffer类型"><a href="#常用Buffer类型" class="headerlink" title="常用Buffer类型"></a>常用Buffer类型</h3><p>ByteBuffer, MappedByteBuffer, CharBuffer, DoubleBuffer, FloatBuffer, IntBuffer, LongBuffer, ShortBuffer。对应了几大基本数据类型。</p>
+<blockquote>
+<p>ByteBuffer可以选择实例化为DirectByteBuffer和HeapByteBuffer，如果数据量比较小的中小应用情况下，可以考虑使用heapBuffer；反之可以用directBuffer。一般来说DirectByteBuffer可以减少一次系统空间到用户空间的拷贝。但Buffer创建和销毁的成本更高，更不宜维护，通常会用内存池来提高性能。其他buffer类似。</p>
+</blockquote>
+<h3 id="利用Buffer读写数据步骤"><a href="#利用Buffer读写数据步骤" class="headerlink" title="利用Buffer读写数据步骤"></a>利用Buffer读写数据步骤</h3><ol>
+<li>将数据写入buffer</li>
+<li>调用flip将写模式改为读模式</li>
+<li>从buffer中读取数据，进行操作</li>
+<li>调用clear()清除整个buffer数据或者调用compact()清空已读数据</li>
+</ol>
+<h3 id="buffer的属性"><a href="#buffer的属性" class="headerlink" title="buffer的属性"></a>buffer的属性</h3><ul>
+<li>capacity容量，该buffer最多存储的字节数</li>
+<li>position位置，写模式下，position从0到capacity-1，变更为读模式后，position归零，边读边移动</li>
+<li>limit限制，写模式下，代表我们能写的最大量为capacity，读模式下，变更为原position位置，即有数据的位置</li>
+</ul>
+<p><img src="/images/nio/buffer_modes.png" alt="buffer_modes"></p>
+<h3 id="buffer-api"><a href="#buffer-api" class="headerlink" title="buffer api"></a>buffer api</h3><ul>
+<li>通过allocate()方法为buffer分配内存大小，如开辟一个48字节的ByteBuffer buffer：ByteBuffer.allocate(48)</li>
+<li>写数据可以通过通道写，如：FileChannel.read(buffer)；也可以通过put方法来写数据，如：buffer.put(127)</li>
+<li>flip()翻转方法，将写模式切换到读模式，position归零，设置limit为之前的position位置</li>
+<li>读数据可以读到通道，如：FileChannel.write(buffer)；也可以调用get()方法读取，byte aByte=buffer.get()</li>
+<li>buffer.rewind()将position置0，limit不变，这样我们就可以重复读取数据啦</li>
+<li>buffer.clear()将position置为0，limit设置为capacity，这里并没有删除buffer里面的数据，只是把标记位置改了；</li>
+<li>buffer.compact()清除已读数据，这里也没有删除数据，将position设置为未读的个数，将后面几个未读的字节顺序的复制到前面的几个字节，limit设置为capacity，比如buffer容量3个字节，读取hello，在读取了2个字节后我就调用了compact()方法，那么此时position为1，limit为3，buffer内部存储的数据buff[0]=’l’,buff[1]=’e’,buff[2]=’l’，因为有一个’l’没有读完，将’l’提取到最前面供下次读取</li>
+<li>mark()可以标记当前的position位置，通过reset来恢复mark位置，可以用来实现重复读取满足条件的数据块</li>
+<li>equals()两个buffer相等需满足，类型相同，buffer剩余（未读）字节数相同，所有剩余字节数相同</li>
+<li>compareTo()比较buffer中的剩余元素，只不过此方法适合排序</li>
+</ul>
+<h2 id="Channel（通道）"><a href="#Channel（通道）" class="headerlink" title="Channel（通道）"></a>Channel（通道）</h2><h3 id="Channel的重要实现"><a href="#Channel的重要实现" class="headerlink" title="Channel的重要实现"></a>Channel的重要实现</h3><ul>
+<li>FileChannel用于文件数据的读写，transferTo()方法可以将通道的数据传送至另外一个通道，完成数据的复制</li>
+<li>DatagramChannel用于UDP数据的读写</li>
+<li>SocketChannel用于TCP的数据读写，通常我们所说的客户端套接字通道</li>
+<li>ServerSocketChannel允许我们监听TCP链接请求，通常我们所说的服务端套接字通道，每一个请求都会创建一个SocketChannel</li>
+</ul>
+<h3 id="Scatter和Gather"><a href="#Scatter和Gather" class="headerlink" title="Scatter和Gather"></a>Scatter和Gather</h3><p>Java nio在Channel实现类也实现了Scatter和Gather相关类</p>
+<ul>
+<li>Scatter.read()是从通道读取的操作能把数据写入多个buffer，即一个通道向多个buffer写数据的过程，但是read必须写满一个buffer后才会向后移动到下一个buffer，因此read不适合大小会动态改变的数据。代码如下：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ByteBuffer</span> <span class="variable">header</span> <span class="operator">=</span> ByteBuffer.allocate(<span class="number">128</span>);</span><br><span class="line"><span class="type">ByteBuffer</span> <span class="variable">body</span> <span class="operator">=</span> ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">ByteBuffer[] bufferArray = &#123; header, body &#125;;</span><br></pre></td></tr></table></figure>
+
+<p>channel.read(bufferArray);<br>Gather.write()是从可以把多个buffer的数据写入通道，write是只会写position到limit之间的数据，因此写是可以适应大小动态改变的数据。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ByteBuffer</span> <span class="variable">header</span> <span class="operator">=</span> ByteBuffer.allocate(<span class="number">128</span>);</span><br><span class="line"><span class="type">ByteBuffer</span> <span class="variable">body</span> <span class="operator">=</span> ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line"><span class="comment">//write data into buffers</span></span><br><span class="line">ByteBuffer[] bufferArray = &#123; header, body &#125;;</span><br><span class="line">channel.write(bufferArray);</span><br></pre></td></tr></table></figure>
+
+<p>在有些场景会非常有用，比如处理多份需要分开传输的数据，举例来说，假设一个消息包含了header和body，我们可能会把header和body分别放在不同的buffer</p>
+<h2 id="Selector（选择器）"><a href="#Selector（选择器）" class="headerlink" title="Selector（选择器）"></a>Selector（选择器）</h2><p>Selector用于检查一个或多个NIO Channel的状态是否可读可写，这样就可以实现单线程管理多个Channels，也就是可以管理多个网络连接，NIO非阻塞主要就是通过Selector注册事件监听，监听通道将数据就绪后，就进行实际的读写操作，因此前面说的IO两个阶段，一阶段NIO仅仅是异步监听，二阶段就是同步实际操作数据。</p>
+<h3 id="Selector监听事件类别"><a href="#Selector监听事件类别" class="headerlink" title="Selector监听事件类别"></a>Selector监听事件类别</h3><ul>
+<li>SelectionKey.OP_CONNECT是Channel和server连接成功后，连接就绪</li>
+<li>SelectionKey.OP_ACCEPT是server Channel接收请求连接就绪</li>
+<li>SelectionKey.OP_READ是Channel有数据可读时，处于读就绪</li>
+<li>SelectionKey.OP_WRITE是Channel可以进行数据写入是，写就绪</li>
+</ul>
+<h3 id="使用Selector的步骤"><a href="#使用Selector的步骤" class="headerlink" title="使用Selector的步骤"></a>使用Selector的步骤</h3><ul>
+<li>创建一个Selector，Selector selector = Selector.open();</li>
+<li>注册Channel到Selector上面，将Channel切换为非阻塞的：channel.configureBlocking(false)，然后绑定Selector：SelectionKey key = channel.register(selector, SelectionKey.OP_READ);</li>
+<li>SelectionKey.OP_READ为监听的事件类别，如果要监听多个事件，可利用位的或运算结合多个常量如：int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;</li>
+</ul>
+<p>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Selector</span> <span class="variable">selector</span> <span class="operator">=</span> Selector.open();</span><br><span class="line"><span class="type">SocketChannel</span> <span class="variable">clientChannel</span> <span class="operator">=</span> SocketChannel.open();</span><br><span class="line">clientChannel.configureBlocking(<span class="literal">false</span>);</span><br><span class="line">clientChannel.connect(<span class="keyword">new</span> <span class="title class_">InetSocketAddress</span>(port));</span><br><span class="line">clientChannel.register(selector, SelectionKey.OP_CONNECT);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>需要使用Selector的Channel必须是非阻塞的，FileChannel不能切换为非租塞的，因此FileChannel不适用于Selector</p>
+</blockquote>
+<h3 id="API"><a href="#API" class="headerlink" title="API"></a>API</h3><ul>
+<li>Selector.select()方法是阻塞的，因此可以放心的将它写在while(true)中，不用担心cpu会空转</li>
+<li>Selector.wakeup()唤醒select()造成的阻塞，可能是有新的事件注册，优先级更高的事件触发（如定时器事件），希望及时处理。其原理是向通道或者连接中写入一个字节，阻塞的select因为有IO事件就绪，立即返回</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>请我一杯咖啡吧~</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/reward/wechatpay.jpg" alt="Mone Zhao 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/reward/alipay.jpg" alt="Mone Zhao 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/03/13/concurrenthashmap/" rel="prev" title="ConcurrentHashMap 从 Java 7 到 Java 8">
+      <i class="fa fa-chevron-left"></i> ConcurrentHashMap 从 Java 7 到 Java 8
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/03/20/ThreadPool/" rel="next" title="Java线程池类">
+      Java线程池类 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Buffer%EF%BC%88%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">Buffer（缓冲区）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8Buffer%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.1.</span> <span class="nav-text">常用Buffer类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E7%94%A8Buffer%E8%AF%BB%E5%86%99%E6%95%B0%E6%8D%AE%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.2.</span> <span class="nav-text">利用Buffer读写数据步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#buffer%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="nav-number">2.3.</span> <span class="nav-text">buffer的属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#buffer-api"><span class="nav-number">2.4.</span> <span class="nav-text">buffer api</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Channel%EF%BC%88%E9%80%9A%E9%81%93%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">Channel（通道）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Channel%E7%9A%84%E9%87%8D%E8%A6%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.1.</span> <span class="nav-text">Channel的重要实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scatter%E5%92%8CGather"><span class="nav-number">3.2.</span> <span class="nav-text">Scatter和Gather</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Selector%EF%BC%88%E9%80%89%E6%8B%A9%E5%99%A8%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">Selector（选择器）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Selector%E7%9B%91%E5%90%AC%E4%BA%8B%E4%BB%B6%E7%B1%BB%E5%88%AB"><span class="nav-number">4.1.</span> <span class="nav-text">Selector监听事件类别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Selector%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="nav-number">4.2.</span> <span class="nav-text">使用Selector的步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API"><span class="nav-number">4.3.</span> <span class="nav-text">API</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mone Zhao"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Mone Zhao</p>
+  <div class="site-description" itemprop="description">世界既不黑也不白，而是一道精致的灰</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/MoneZhao" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MoneZhao" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:monezhao@163.com" title="E-Mail → mailto:monezhao@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://monezhao.github.io/" title="Blog → https:&#x2F;&#x2F;monezhao.github.io"><i class="fa fa-home fa-fw"></i>Blog</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mone Zhao</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">165k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:30</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/canvas_sphere.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '454060c77ab21fa02bc0',
+      clientSecret: '2f95b7c2f7d21bb15cd0dce2884778a15fc3f0f7',
+      repo        : 'monezhao.github.io',
+      owner       : 'MoneZhao',
+      admin       : ['MoneZhao'],
+      id          : '8cf74950ee681ac8f7453ea382cd9978',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
+<script type="text/javascript" src="/js/clicklove.js"></script>
