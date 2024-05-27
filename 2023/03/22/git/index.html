@@ -29,7 +29,7 @@
 <meta property="og:description" content="Git 配置1234567# 配置gitgit config --global user.name &quot;Mone Zhao&quot;git config --global user.email &quot;monezhao@163.com&quot;git config --global color.ui truegit config --global http.sslVerify fa">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-03-21T16:15:35.000Z">
-<meta property="article:modified_time" content="2023-12-20T03:04:30.093Z">
+<meta property="article:modified_time" content="2024-05-27T02:50:57.213Z">
 <meta property="article:author" content="Mone Zhao">
 <meta property="article:tag" content="git">
 <meta name="twitter:card" content="summary">
@@ -240,7 +240,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-12-20 11:04:30" itemprop="dateModified" datetime="2023-12-20T11:04:30+08:00">2023-12-20</time>
+      <time title="修改时间：2024-05-27 10:50:57" itemprop="dateModified" datetime="2024-05-27T10:50:57+08:00">2024-05-27</time>
     </span>
 
   
@@ -250,7 +250,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>169</span>
+      <span>185</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -275,7 +275,7 @@
 
 <h2 id="Shell设置Git快捷键"><a href="#Shell设置Git快捷键" class="headerlink" title="Shell设置Git快捷键"></a>Shell设置Git快捷键</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">gaa=<span class="string">&#x27;git add --all&#x27;</span></span><br><span class="line">gcam=<span class="string">&#x27;git commit -a -m&#x27;</span></span><br><span class="line">gcm=<span class="string">&#x27;git checkout master&#x27;</span></span><br><span class="line">gd=<span class="string">&#x27;git diff&#x27;</span></span><br><span class="line">gl=<span class="string">&#x27;git pull&#x27;</span></span><br><span class="line">gmom=<span class="string">&#x27;git merge origin/master&#x27;</span></span><br><span class="line">gp=<span class="string">&#x27;git push&#x27;</span></span><br><span class="line">gst=<span class="string">&#x27;git status&#x27;</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="gitconfig"><a href="#gitconfig" class="headerlink" title=".gitconfig"></a>.gitconfig</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[user]</span><br><span class="line">	name = Mone Zhao</span><br><span class="line">	email = monezhao@163.com</span><br><span class="line">[color]</span><br><span class="line">	ui = true</span><br><span class="line">[http]</span><br><span class="line">	sslVerify = false</span><br><span class="line">[credential]</span><br><span class="line">	helper = store</span><br><span class="line">[safe]</span><br><span class="line">	directory = *</span><br><span class="line">[alias]</span><br><span class="line">	cp = cherry-pick</span><br><span class="line">	st = status</span><br><span class="line">	cl = clone</span><br><span class="line">	ci = commit</span><br><span class="line">	co = checkout</span><br><span class="line">	br = branch</span><br><span class="line">	df = diff</span><br><span class="line">	pl = pull</span><br><span class="line">	ps = push</span><br></pre></td></tr></table></figure>
+<h2 id="gitconfig"><a href="#gitconfig" class="headerlink" title=".gitconfig"></a>.gitconfig</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">[user]</span><br><span class="line">	name = Mone Zhao</span><br><span class="line">	email = monezhao@163.com</span><br><span class="line">[color]</span><br><span class="line">	ui = true</span><br><span class="line">[http]</span><br><span class="line">	sslverify = false</span><br><span class="line">[credential]</span><br><span class="line">	helper = store</span><br><span class="line">[safe]</span><br><span class="line">	directory = *</span><br><span class="line">[alias]</span><br><span class="line">	cp = cherry-pick</span><br><span class="line">	st = status</span><br><span class="line">	cl = clone</span><br><span class="line">	ci = commit</span><br><span class="line">	co = checkout</span><br><span class="line">	br = branch</span><br><span class="line">	df = diff</span><br><span class="line">	pl = pull</span><br><span class="line">	ps = push</span><br><span class="line">[credential &quot;http://192.168.5.106:3000&quot;]</span><br><span class="line">	provider = generic</span><br><span class="line">[credential &quot;https://gitee.com&quot;]</span><br><span class="line">	provider = generic</span><br><span class="line">[credential &quot;https://github.com&quot;]</span><br><span class="line">	provider = generic</span><br></pre></td></tr></table></figure>
 
     </div>
 
