@@ -2117,10 +2117,6 @@ pre code {
 .post-reward div span {
   display: block;
 }
-.post-reward div:hover span {
-  animation: next-roll 0.1s infinite linear;
-  pointer-events: none;
-}
 .post-reward img {
   display: inline-block;
   margin: 0.8em 2em 0;
@@ -2608,7 +2604,7 @@ header.header {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #bd94eb;
+  background: #36706a;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
