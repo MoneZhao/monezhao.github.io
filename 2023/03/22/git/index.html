@@ -29,7 +29,7 @@
 <meta property="og:description" content="Git 配置1234567# 配置gitgit config --global user.name &quot;Mone Zhao&quot;git config --global user.email &quot;monezhao@163.com&quot;git config --global color.ui truegit config --global http.sslVerify fa">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-03-21T16:15:35.000Z">
-<meta property="article:modified_time" content="2024-01-01T04:09:49.165Z">
+<meta property="article:modified_time" content="2024-06-10T03:22:40.000Z">
 <meta property="article:author" content="Mone Zhao">
 <meta property="article:tag" content="git">
 <meta name="twitter:card" content="summary">
@@ -91,7 +91,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">36</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">16</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">38</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">16</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -157,7 +157,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">38</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -240,7 +240,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-01 12:09:49" itemprop="dateModified" datetime="2024-01-01T12:09:49+08:00">2024-01-01</time>
+      <time title="修改时间：2024-06-10 11:22:40" itemprop="dateModified" datetime="2024-06-10T11:22:40+08:00">2024-06-10</time>
     </span>
 
   
@@ -250,7 +250,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>169</span>
+      <span>185</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -275,7 +275,7 @@
 
 <h2 id="Shell设置Git快捷键"><a href="#Shell设置Git快捷键" class="headerlink" title="Shell设置Git快捷键"></a>Shell设置Git快捷键</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">gaa=<span class="string">&#x27;git add --all&#x27;</span></span><br><span class="line">gcam=<span class="string">&#x27;git commit -a -m&#x27;</span></span><br><span class="line">gcm=<span class="string">&#x27;git checkout master&#x27;</span></span><br><span class="line">gd=<span class="string">&#x27;git diff&#x27;</span></span><br><span class="line">gl=<span class="string">&#x27;git pull&#x27;</span></span><br><span class="line">gmom=<span class="string">&#x27;git merge origin/master&#x27;</span></span><br><span class="line">gp=<span class="string">&#x27;git push&#x27;</span></span><br><span class="line">gst=<span class="string">&#x27;git status&#x27;</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="gitconfig"><a href="#gitconfig" class="headerlink" title=".gitconfig"></a>.gitconfig</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[user]</span><br><span class="line">	name = Mone Zhao</span><br><span class="line">	email = monezhao@163.com</span><br><span class="line">[color]</span><br><span class="line">	ui = true</span><br><span class="line">[http]</span><br><span class="line">	sslVerify = false</span><br><span class="line">[credential]</span><br><span class="line">	helper = store</span><br><span class="line">[safe]</span><br><span class="line">	directory = *</span><br><span class="line">[alias]</span><br><span class="line">	cp = cherry-pick</span><br><span class="line">	st = status</span><br><span class="line">	cl = clone</span><br><span class="line">	ci = commit</span><br><span class="line">	co = checkout</span><br><span class="line">	br = branch</span><br><span class="line">	df = diff</span><br><span class="line">	pl = pull</span><br><span class="line">	ps = push</span><br></pre></td></tr></table></figure>
+<h2 id="gitconfig"><a href="#gitconfig" class="headerlink" title=".gitconfig"></a>.gitconfig</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">[user]</span><br><span class="line">	name = Mone Zhao</span><br><span class="line">	email = monezhao@163.com</span><br><span class="line">[color]</span><br><span class="line">	ui = true</span><br><span class="line">[http]</span><br><span class="line">	sslverify = false</span><br><span class="line">[credential]</span><br><span class="line">	helper = store</span><br><span class="line">[safe]</span><br><span class="line">	directory = *</span><br><span class="line">[alias]</span><br><span class="line">	cp = cherry-pick</span><br><span class="line">	st = status</span><br><span class="line">	cl = clone</span><br><span class="line">	ci = commit</span><br><span class="line">	co = checkout</span><br><span class="line">	br = branch</span><br><span class="line">	df = diff</span><br><span class="line">	pl = pull</span><br><span class="line">	ps = push</span><br><span class="line">[credential &quot;http://192.168.5.106:3000&quot;]</span><br><span class="line">	provider = generic</span><br><span class="line">[credential &quot;https://gitee.com&quot;]</span><br><span class="line">	provider = generic</span><br><span class="line">[credential &quot;https://github.com&quot;]</span><br><span class="line">	provider = generic</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -332,8 +332,8 @@
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/04/01/Linux-route/" rel="next" title="双网卡访问特定ip网段走指定网卡">
-                  双网卡访问特定ip网段走指定网卡 <i class="fa fa-angle-right"></i>
+                <a href="/2024/04/01/Linux-route/" rel="next" title="双网卡访问特定ip网段走指定网卡(Linux)">
+                  双网卡访问特定ip网段走指定网卡(Linux) <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -346,7 +346,6 @@
 
 
 
-    <div class="comments gitalk-container"></div>
 </div>
   </main>
 
@@ -355,7 +354,7 @@
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2024</span>
+    <span itemprop="copyrightYear">2025</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>
@@ -367,14 +366,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">52k</span>
+    <span title="站点总字数">53k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">3:09</span>
+    <span title="站点阅读时长">3:11</span>
   </span>
 </div>
 
@@ -442,10 +441,6 @@ const darkmode = new Darkmode(options);
 window.darkmode = darkmode;
 darkmode.showWidget();
 </script>
-<link rel="stylesheet" href="/lib/gitalk/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
-
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"MoneZhao","repo":"monezhao.github.io","client_id":"454060c77ab21fa02bc0","client_secret":"2f95b7c2f7d21bb15cd0dce2884778a15fc3f0f7","admin_user":"MoneZhao","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"/lib/gitalk/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"9177587a41e0128db11ffe4db8d0a914"}</script>
-<script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
 </html>

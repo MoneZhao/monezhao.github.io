@@ -89,7 +89,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">36</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">16</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">38</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">16</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -154,7 +154,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">38</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -200,6 +200,252 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://monezhao.github.io/2019/07/02/JDK8-new-things/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Mone Zhao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mone Zhao的博客">
+      <meta itemprop="description" content="世界既不黑也不白，而是一道精致的灰">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Mone Zhao的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2019/07/02/JDK8-new-things/" class="post-title-link" itemprop="url">JDK8 新特性</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-07-02 15:09:37" itemprop="dateCreated datePublished" datetime="2019-07-02T15:09:37+08:00">2019-07-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-07-26 07:28:58" itemprop="dateModified" datetime="2019-07-26T07:28:58+08:00">2019-07-26</time>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>JDK 8 是自JDK 5以来，Oracle对JDK做出的最重大的更新，这个版本中包含了语言、编译器、库、工具、JVM等多种新特性。针对我们平时常用的一些场景，接下来将介绍JDK 8中的新特性。</p>
+<h2 id="JAVA-语言的新特性"><a href="#JAVA-语言的新特性" class="headerlink" title="JAVA 语言的新特性"></a>JAVA 语言的新特性</h2><h3 id="Lambda表达式和函数式接口"><a href="#Lambda表达式和函数式接口" class="headerlink" title="Lambda表达式和函数式接口"></a>Lambda表达式和函数式接口</h3><p>Lambda的设计者们为了让现有的功能与Lambda表达式良好兼容，考虑了很多方法，于是产生了函数接口这个概念，所以我们先讲函数式接口。</p>
+<h4 id="函数式接口"><a href="#函数式接口" class="headerlink" title="函数式接口"></a>函数式接口</h4><p>函数式接口(Functional Interface)就是一个有且仅有一个抽象方法，但是可以有多个非抽象方法的接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">GreetingService</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">sayMessage</span><span class="params">(String message)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/07/02/JDK8-new-things/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://monezhao.github.io/2019/06/06/maven-knowledge/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Mone Zhao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mone Zhao的博客">
+      <meta itemprop="description" content="世界既不黑也不白，而是一道精致的灰">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Mone Zhao的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2019/06/06/maven-knowledge/" class="post-title-link" itemprop="url">Maven入门知识</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-06-06 20:37:53" itemprop="dateCreated datePublished" datetime="2019-06-06T20:37:53+08:00">2019-06-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-07-30 00:26:48" itemprop="dateModified" datetime="2022-07-30T00:26:48+08:00">2022-07-30</time>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>Maven 是 Apache 下的一个纯 Java 开发的项目管理工具，可以对 Java 项目进行构建、依赖管理。</p>
+</blockquote>
+<h2 id="约定配置"><a href="#约定配置" class="headerlink" title="约定配置"></a>约定配置</h2><p>Maven 提倡使用一个共同的标准目录结构，Maven 使用约定优于配置的原则，大家尽可能的遵守这样的目录结构。如下所示：</p>
+<table>
+<thead>
+<tr>
+<th align="center">目录</th>
+<th align="center">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">${basedir}</td>
+<td align="center">存放pom.xml和所有的子目录</td>
+</tr>
+<tr>
+<td align="center">${basedir}/src/main/java</td>
+<td align="center">项目的java源代码</td>
+</tr>
+<tr>
+<td align="center">${basedir}/src/main/resources</td>
+<td align="center">项目的资源，比如说property文件，springmvc.xml</td>
+</tr>
+<tr>
+<td align="center">${basedir}/src/test/java</td>
+<td align="center">项目的测试类，比如说Junit代码</td>
+</tr>
+<tr>
+<td align="center">${basedir}/src/test/resources</td>
+<td align="center">测试用的资源</td>
+</tr>
+<tr>
+<td align="center">${basedir}/src/main/webapp/WEB-INF</td>
+<td align="center">web应用文件目录，web项目的信息，比如存放web.xml、本地图片、jsp视图页面</td>
+</tr>
+<tr>
+<td align="center">${basedir}/target</td>
+<td align="center">打包输出目录</td>
+</tr>
+<tr>
+<td align="center">${basedir}/target/classes</td>
+<td align="center">编译输出目录</td>
+</tr>
+<tr>
+<td align="center">${basedir}/target/test-classes</td>
+<td align="center">测试编译输出目录</td>
+</tr>
+</tbody></table>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/06/06/maven-knowledge/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://monezhao.github.io/2018/05/08/docker-lnmp/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -236,7 +482,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-01-01 12:23:02" itemprop="dateModified" datetime="2024-01-01T12:23:02+08:00">2024-01-01</time>
+      <time title="修改时间：2024-01-02 04:23:04" itemprop="dateModified" datetime="2024-01-02T04:23:04+08:00">2024-01-02</time>
     </span>
 
   
@@ -338,7 +584,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2019-04-11 15:53:32" itemprop="dateModified" datetime="2019-04-11T15:53:32+08:00">2019-04-11</time>
+      <time title="修改时间：2019-04-12 06:53:32" itemprop="dateModified" datetime="2019-04-12T06:53:32+08:00">2019-04-12</time>
     </span>
 
   
@@ -444,7 +690,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-07-29 09:28:35" itemprop="dateModified" datetime="2022-07-29T09:28:35+08:00">2022-07-29</time>
+      <time title="修改时间：2022-07-30 00:28:36" itemprop="dateModified" datetime="2022-07-30T00:28:36+08:00">2022-07-30</time>
     </span>
 
   
@@ -545,7 +791,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-07-29 09:27:42" itemprop="dateModified" datetime="2022-07-29T09:27:42+08:00">2022-07-29</time>
+      <time title="修改时间：2022-07-30 00:27:44" itemprop="dateModified" datetime="2022-07-30T00:27:44+08:00">2022-07-30</time>
     </span>
 
   
@@ -658,7 +904,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-07-29 09:30:53" itemprop="dateModified" datetime="2022-07-29T09:30:53+08:00">2022-07-29</time>
+      <time title="修改时间：2022-07-30 00:30:54" itemprop="dateModified" datetime="2022-07-30T00:30:54+08:00">2022-07-30</time>
     </span>
 
   
@@ -775,7 +1021,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-07-29 09:27:10" itemprop="dateModified" datetime="2022-07-29T09:27:10+08:00">2022-07-29</time>
+      <time title="修改时间：2022-07-30 00:27:12" itemprop="dateModified" datetime="2022-07-30T00:27:12+08:00">2022-07-30</time>
     </span>
 
   
@@ -878,7 +1124,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-07-29 09:18:34" itemprop="dateModified" datetime="2022-07-29T09:18:34+08:00">2022-07-29</time>
+      <time title="修改时间：2022-07-30 00:18:36" itemprop="dateModified" datetime="2022-07-30T00:18:36+08:00">2022-07-30</time>
     </span>
 
   
@@ -991,7 +1237,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-07-29 09:30:20" itemprop="dateModified" datetime="2022-07-29T09:30:20+08:00">2022-07-29</time>
+      <time title="修改时间：2022-07-30 00:30:22" itemprop="dateModified" datetime="2022-07-30T00:30:22+08:00">2022-07-30</time>
     </span>
 
   
@@ -1049,212 +1295,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://monezhao.github.io/2018/03/12/hashmap/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="Mone Zhao">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mone Zhao的博客">
-      <meta itemprop="description" content="世界既不黑也不白，而是一道精致的灰">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Mone Zhao的博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2018/03/12/hashmap/" class="post-title-link" itemprop="url">重新认识 Java 8 HashMap</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2018-03-12 09:31:43" itemprop="dateCreated datePublished" datetime="2018-03-12T09:31:43+08:00">2018-03-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-04-04 00:18:04" itemprop="dateModified" datetime="2023-04-04T00:18:04+08:00">2023-04-04</time>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>5.9k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>22 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>HashMap是Java程序员使用频率最高的用于映射(键值对)处理的数据类型。随着JDK（Java Developmet Kit）版本的更新，JDK1.8对HashMap底层的实现进行了优化，例如引入红黑树的数据结构和扩容的优化等。本文结合JDK1.7和JDK1.8的区别，深入探讨HashMap的结构实现和功能原理。</p>
-<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Java为数据结构中的映射定义了一个接口java.util.Map，此接口主要有四个常用的实现类，分别是HashMap、Hashtable、LinkedHashMap和TreeMap，类继承关系如下图所示：</p>
-<p><img data-src="/images/hashmap/java.util.map%E7%B1%BB%E5%9B%BE.png" alt="类继承关系"></p>
-<p>下面针对各个实现类的特点做一些说明：</p>
-<ol>
-<li><p>HashMap：它根据键的hashCode值存储数据，大多数情况下可以直接定位到它的值，因而具有很快的访问速度，但遍历顺序却是不确定的。 HashMap最多只允许一条记录的键为null，允许多条记录的值为null。HashMap非线程安全，即任一时刻可以有多个线程同时写HashMap，可能会导致数据的不一致。如果需要满足线程安全，可以用 Collections的synchronizedMap方法使HashMap具有线程安全的能力，或者使用ConcurrentHashMap。</p>
-</li>
-<li><p>Hashtable：Hashtable是遗留类，很多映射的常用功能与HashMap类似，不同的是它承自Dictionary类，并且是线程安全的，任一时间只有一个线程能写Hashtable，并发性不如ConcurrentHashMap，因为ConcurrentHashMap引入了分段锁。Hashtable不建议在新代码中使用，不需要线程安全的场合可以用HashMap替换，需要线程安全的场合可以用ConcurrentHashMap替换。</p>
-</li>
-<li><p>LinkedHashMap：LinkedHashMap是HashMap和双向链表合二为一的HashMap一个子类，保存了记录的插入顺序，在用Iterator遍历LinkedHashMap时，先得到的记录肯定是先插入的，也可以在构造时带参数，按照访问次序排序。</p>
-</li>
-<li><p>TreeMap：TreeMap实现SortedMap接口，能够把它保存的记录根据键排序，默认是按键值的升序排序，也可以指定排序的比较器，当用Iterator遍历TreeMap时，得到的记录是排过序的。如果使用排序的映射，建议使用TreeMap。在使用TreeMap时，key必须实现Comparable接口或者在构造TreeMap传入自定义的Comparator，否则会在运行时抛出java.lang.ClassCastException类型的异常。</p>
-</li>
-</ol>
-<p>对于上述四种Map类型的类，要求映射中的key是不可变对象。不可变对象是该对象在创建后它的哈希值不会被改变。如果对象的哈希值发生变化，Map对象很可能就定位不到映射的位置了。</p>
-<p>通过上面的比较，我们知道了HashMap是Java的Map家族中一个普通成员，鉴于它可以满足大多数场景的使用条件，所以是使用频度最高的一个。下文我们主要结合源码，从存储结构、常用方法分析、扩容以及安全性等方面深入讲解HashMap的工作原理。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/03/12/hashmap/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://monezhao.github.io/2018/02/08/apt-shell/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="Mone Zhao">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mone Zhao的博客">
-      <meta itemprop="description" content="世界既不黑也不白，而是一道精致的灰">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Mone Zhao的博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2018/02/08/apt-shell/" class="post-title-link" itemprop="url">Ubuntu apt 更新和清理</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2018-02-08 20:07:09" itemprop="dateCreated datePublished" datetime="2018-02-08T20:07:09+08:00">2018-02-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-07-29 09:11:39" itemprop="dateModified" datetime="2022-07-29T09:11:39+08:00">2022-07-29</time>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>77</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="apt-sh更新清理软件"><a href="#apt-sh更新清理软件" class="headerlink" title="apt.sh更新清理软件"></a><code>apt.sh</code>更新清理软件</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sudo aptitude update</span><br><span class="line">sudo aptitude upgrade -y</span><br><span class="line">sudo aptitude autoclean -y</span><br><span class="line">sudo aptitude clean</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;\033[31m aptitude end \033[0m&quot;</span></span><br><span class="line"></span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get upgrade -y</span><br><span class="line">sudo apt-get autoremove -y</span><br><span class="line">sudo apt-get autoclean</span><br><span class="line">sudo apt-get clean</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;\033[31m apt-get end \033[0m&quot;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="ls-sh查看deb包缓存"><a href="#ls-sh查看deb包缓存" class="headerlink" title="ls.sh查看deb包缓存"></a><code>ls.sh</code>查看deb包缓存</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /var/cache/apt/archives</span><br><span class="line"><span class="built_in">pwd</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;===================&quot;</span></span><br><span class="line"><span class="built_in">ls</span> | grep deb</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1267,7 +1307,7 @@
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2024</span>
+    <span itemprop="copyrightYear">2025</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>
@@ -1279,14 +1319,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">52k</span>
+    <span title="站点总字数">53k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">3:09</span>
+    <span title="站点阅读时长">3:11</span>
   </span>
 </div>
 
@@ -1354,10 +1394,6 @@ const darkmode = new Darkmode(options);
 window.darkmode = darkmode;
 darkmode.showWidget();
 </script>
-<link rel="stylesheet" href="/lib/gitalk/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
-
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"MoneZhao","repo":"monezhao.github.io","client_id":"454060c77ab21fa02bc0","client_secret":"2f95b7c2f7d21bb15cd0dce2884778a15fc3f0f7","admin_user":"MoneZhao","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"/lib/gitalk/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"c853ec00cc9d13bc22336b7d45d1416e"}</script>
-<script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
 </html>
